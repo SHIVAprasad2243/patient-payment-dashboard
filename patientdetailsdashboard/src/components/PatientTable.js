@@ -48,11 +48,6 @@ const PatientTable = ({
             </tr>
           ) : (
             filteredPatients.map((patient) => {
-              const packageAmt = Number(patient.package_amount) || 0;
-              const totalBill = Number(patient.total_amount) || 0;
-              const advance = Number(patient.advance_payment) || 0;
-              const discount = Number(patient.discount) || 0;
-
               return (
                 <tr key={patient.id}>
                   <td className="font-bold">
