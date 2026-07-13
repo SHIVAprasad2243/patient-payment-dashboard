@@ -72,6 +72,8 @@ describe('Payment calculations and Form fields', () => {
       surgeon_charge: '',
       anaesthetist_charge: '',
       assistant_charge: '',
+      balance: '',
+      payment_method: '',
     };
 
     render(
@@ -136,6 +138,13 @@ describe('Payment calculations and Form fields', () => {
       surgeon_charge: '',
       anaesthetist_charge: '',
       assistant_charge: '',
+      bp: "",
+      pr: "",
+      rr: "",
+      spo2: "",
+      temperature: "",
+      heart: "",
+      lungs: "",
     };
 
     render(

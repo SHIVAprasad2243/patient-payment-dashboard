@@ -1,12 +1,12 @@
 import React from 'react';
 
-const PatientTable = ({ 
-  patientsLoading, 
-  filteredPatients, 
-  userRole, 
-  handlePrintClick, 
-  handleEditPatient, 
-  handleDeletePatient 
+const PatientTable = ({
+  patientsLoading,
+  filteredPatients,
+  userRole,
+  handlePrintClick,
+  handleEditPatient,
+  handleDeletePatient
 }) => {
   return (
     <div className="records-table-container">
@@ -24,8 +24,10 @@ const PatientTable = ({
             <th>Assistant</th>
             {userRole === 'admin' && (
               <>
-                <th>Total Pay</th>
                 <th>Remaining Balance</th>
+                <th>Total Amount</th>
+                <th>Payment status</th>
+                <th>Payment method</th>
               </>
             )}
             <th>Actions</th>
@@ -51,7 +53,7 @@ const PatientTable = ({
               const advance = Number(patient.advance_payment) || 0;
               const discount = Number(patient.discount) || 0;
               const balance = packageAmt - totalBill - advance - discount;
-              
+
               return (
                 <tr key={patient.id}>
                   <td className="font-bold">
@@ -82,10 +84,23 @@ const PatientTable = ({
                   <td>{patient.assistant_name || '-'}</td>
                   {userRole === 'admin' && (
                     <>
-                      <td>₹{totalBill}</td>
-                      <td className={balance > 0 ? 'text-danger font-bold' : 'text-success font-bold'}>
-                        ₹{balance}
+                      <td>₹{patient.remaining_amount || 0}</td>
+
+                      <td>₹{patient.total_amount || 0}</td>
+
+                      <td>
+                        <span
+                          className={
+                            patient.payment_status === "Fully Paid"
+                              ? "status-badge fully-paid"
+                              : "status-badge due"
+                          }
+                        >
+                          {patient.payment_status || "Due"}
+                        </span>
                       </td>
+
+                      <td>{patient.cash_method || "Not Selected"}</td>
                     </>
                   )}
                   <td>

@@ -33,6 +33,15 @@ const emptyPatientForm = {
   surgeon_charge: '',
   anaesthetist_charge: '',
   assistant_charge: '',
+  balance: '',
+  payment_method: '',
+  bp: "",
+  pr: "",
+  rr: "",
+  spo2: "",
+  temperature: "",
+  heart: "",
+  lungs: "",
 };
 
 function App() {
@@ -73,8 +82,8 @@ function App() {
   ].sort());
 
   const [masterStaff] = useState({
-    surgeons: ['Dr. Krishna'],
-    anaesthetists: ['Dr. Anitha'],
+    surgeons: ['Dr.s.Sneha ms OBG', 'Dr.venkateshwarlu ms'],
+    anaesthetists: ['Dr.Lavany', 'Dr.Sridhar'],
     assistants: ['Paramesh', 'Swamy']
   });
 
@@ -264,7 +273,21 @@ function App() {
     setPatientMessage('');
     setPatientsLoading(true);
 
-    const balance = (Number(patientForm.package_amount) || 0) - (Number(patientForm.total_amount) || 0) - (Number(patientForm.advance_payment) || 0) - (Number(patientForm.discount) || 0);
+    const remaining_amount = Math.max(
+      (Number(patientForm.package_amount) || 0) -
+      (Number(patientForm.advance_payment) || 0) -
+      (Number(patientForm.balance) || 0) -
+      (Number(patientForm.discount) || 0),
+      0
+    );
+
+    const totalAmount = patientForm.advance_payment || patientForm.balance 
+      ? (Number(patientForm.advance_payment) || 0) + (Number(patientForm.balance) || 0) + (Number(patientForm.discount) || 0)
+      : 0;
+
+    const paymentStatus = (Number(patientForm.package_amount) > 0 && totalAmount === Number(patientForm.package_amount)) 
+      ? 'Fully Paid' 
+      : 'Due';
 
     const patientPayload = {
       first_name: patientForm.first_name,
@@ -284,14 +307,23 @@ function App() {
       package_amount: Number(patientForm.package_amount) || 0,
       advance_payment: Number(patientForm.advance_payment) || 0,
       discount: Number(patientForm.discount) || 0,
-      remaining_amount: balance,
+      remaining_amount: remaining_amount,
       photo_url: patientForm.patient_image,
       age: patientForm.age ? Number(patientForm.age) : null,
-      total_amount: Number(patientForm.total_amount) || 0,
+      total_amount: totalAmount,
       cash_method: patientForm.cash_method,
       surgeon_charge: Number(patientForm.surgeon_charge) || 0,
       anaesthetist_charge: Number(patientForm.anaesthetist_charge) || 0,
       assistant_charge: Number(patientForm.assistant_charge) || 0,
+      bp: patientForm.bp || '',
+      pr: patientForm.pr || '',
+      rr: patientForm.rr || '',
+      spo2: patientForm.spo2 || '',
+      temperature: patientForm.temperature || '',
+      heart: patientForm.heart || '',
+      lungs: patientForm.lungs || '',
+      balance: Number(patientForm.balance) || 0,
+      payment_status: paymentStatus,
     };
 
     const request = editingPatientId
@@ -342,6 +374,14 @@ function App() {
       surgeon_charge: patient.surgeon_charge || '',
       anaesthetist_charge: patient.anaesthetist_charge || '',
       assistant_charge: patient.assistant_charge || '',
+      bp: patient.bp || '',
+      pr: patient.pr || '',
+      rr: patient.rr || '',
+      spo2: patient.spo2 || '',
+      temperature: patient.temperature || '',
+      heart: patient.heart || '',
+      lungs: patient.lungs || '',
+      balance: patient.balance || '',
     });
     setPatientMessage('');
     setShowPatientModal(true);

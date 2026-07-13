@@ -1,16 +1,16 @@
 import React from 'react';
 
-const LoginPage = ({ 
-  email, 
-  setEmail, 
-  password, 
-  setPassword, 
-  showPassword, 
-  setShowPassword, 
-  handleLogin, 
-  handleSignUp, 
-  loading, 
-  message 
+const LoginPage = ({
+  email,
+  setEmail,
+  password,
+  setPassword,
+  showPassword,
+  setShowPassword,
+  handleLogin,
+  handleSignUp,
+  loading,
+  message
 }) => {
   return (
     <main className="auth-page">
@@ -18,9 +18,9 @@ const LoginPage = ({
         <aside className="auth-sidebar">
           <div className="sidebar-brand">
             <div className="brand-logo-container">
-              <img 
-                src="/images.jpg" 
-                alt="Buddha Logo" 
+              <img
+                src="/images.jpg"
+                alt="Buddha Logo"
                 className="buddha-logo"
               />
             </div>
@@ -30,23 +30,23 @@ const LoginPage = ({
             </div>
           </div>
           <p className="sidebar-tagline">Care You Can Trust</p>
-          
+
           <div className="sidebar-image-container">
-            <img 
-              src="/clipboard4.png" 
-              alt="Medical Clipboard" 
-              className="sidebar-medical-img" 
+            <img
+              src="/clipboard4.png"
+              alt="Medical Clipboard"
+              className="sidebar-medical-img"
             />
           </div>
 
           <div className="sidebar-footer">
             <p className="footer-headline">Your health, our priority.</p>
             <p className="footer-subline">We are here for you always.</p>
-            
+
             <div className="contact-info">
               <div className="contact-item">
                 <span className="icon">📍</span>
-                <p>Siddhartha Nursing Home, Vidyanagar, Choutuppal, Yadadri Bhuvanagiri - 508252</p>
+                <p>H No-3-53/1/A,  Siddhartha Nursing Home, Vidyanagar, Choutuppal, Yadadri Bhuvanagiri - 508252</p>
               </div>
               <div className="contact-item">
                 <span className="icon">📞</span>
@@ -93,8 +93,8 @@ const LoginPage = ({
                   minLength="6"
                   required
                 />
-                <button 
-                  type="button" 
+                <button
+                  type="button"
                   className="password-toggle"
                   onClick={() => setShowPassword(!showPassword)}
                 >
@@ -108,7 +108,7 @@ const LoginPage = ({
             <button className="auth-primary-button" type="submit" disabled={loading}>
               {loading ? 'Signing in...' : 'Sign in'}
             </button>
-            
+
             <button type="button" className="forgot-password">Forgot password?</button>
           </form>
 
