@@ -146,7 +146,7 @@ function App() {
     if (userRole) {
       fetchPatients();
     }
-  }, [session, userRole,fetchPatients]);
+  }, [session, userRole]);
 
   const fetchPatients = useCallback(async () => {
     setPatientsLoading(true);
