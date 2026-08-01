@@ -135,19 +135,6 @@ function App() {
     }
   };
 
-  useEffect(() => {
-    if (!session) {
-      setPatients([]);
-      setPatientForm(emptyPatientForm);
-      setEditingPatientId(null);
-      return;
-    }
-
-    if (userRole) {
-      fetchPatients();
-    }
-  }, [session, userRole]);
-
   const fetchPatients = useCallback(async () => {
     setPatientsLoading(true);
     setPatientMessage('');
@@ -209,6 +196,21 @@ function App() {
     setPatients(mergedPatients);
     setPatientsLoading(false);
   }, [userRole, supabase]);
+
+  useEffect(() => {
+    if (!session) {
+      setPatients([]);
+      setPatientForm(emptyPatientForm);
+      setEditingPatientId(null);
+      return;
+    }
+
+    if (userRole) {
+      fetchPatients();
+    }
+  }, [session, userRole,fetchPatients]);
+
+  
 
   const handleLogin = async (event) => {
     event.preventDefault();
