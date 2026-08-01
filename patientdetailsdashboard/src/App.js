@@ -195,7 +195,7 @@ function App() {
 
     setPatients(mergedPatients);
     setPatientsLoading(false);
-  }, [userRole, supabase]);
+  }, [userRole]);
 
   useEffect(() => {
     if (!session) {
