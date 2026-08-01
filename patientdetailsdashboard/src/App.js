@@ -63,6 +63,8 @@ function App() {
   const [showPrintModal, setShowPrintModal] = useState(false);
   const [selectedPatient, setSelectedPatient] = useState(null);
 
+
+
   const [masterDiagnoses] = useState([
     'Appendix & Laparoscopy',
     'Breast Fibroid',
@@ -141,24 +143,70 @@ function App() {
       return;
     }
 
-    fetchPatients();
-  }, [session]);
+    if (userRole) {
+      fetchPatients();
+    }
+  }, [session, userRole]);
 
   const fetchPatients = async () => {
     setPatientsLoading(true);
     setPatientMessage('');
 
-    const { data, error } = await supabase
+    const { data: patientData, error: patientError } = await supabase
       .from('patientDetailsTable')
       .select('*')
       .order('id', { ascending: false });
 
-    if (error) {
-      setPatientMessage(error.message);
-    } else {
-      setPatients(data || []);
+    if (patientError) {
+      setPatientMessage(patientError.message);
+      setPatientsLoading(false);
+      return;
     }
 
+    let mergedPatients = patientData || [];
+
+    if (userRole === 'admin') {
+      const paymentTable = 'adminPatientPaymentDetailsTable';
+
+      const { data: paymentData, error: paymentError } = await supabase
+        .from(paymentTable)
+        .select('*');
+
+      if (!paymentError && paymentData) {
+        mergedPatients = mergedPatients.map(patient => {
+          const pmt = paymentData.find(p => p.patient_id === patient.id) || {
+            package_amount: 0,
+            advance_payment: 0,
+            discount: 0,
+            balance: 0,
+            remaining_balance: 0,
+            remaining_amount: 0,
+            total_amount: 0,
+            cash_method: '',
+            payment_status: 'Due'
+          };
+
+          const paymentFields = {
+            package_amount: pmt.package_amount || 0,
+            advance_payment: pmt.advance_payment || 0,
+            discount: pmt.discount || 0,
+            balance: pmt.balance || 0,
+            total_amount: pmt.total_amount || 0,
+            cash_method: pmt.cash_method || '',
+            payment_status: pmt.payment_status || 'Due',
+            patient_id: pmt.patient_id || patient.id,
+          };
+
+          return { 
+            ...patient, 
+            ...paymentFields,
+            remaining_amount: pmt.remaining_balance !== undefined ? pmt.remaining_balance : (pmt.remaining_amount || 0)
+          };
+        });
+      }
+    }
+
+    setPatients(mergedPatients);
     setPatientsLoading(false);
   };
 
@@ -281,12 +329,12 @@ function App() {
       0
     );
 
-    const totalAmount = patientForm.advance_payment || patientForm.balance 
+    const totalAmount = patientForm.advance_payment || patientForm.balance
       ? (Number(patientForm.advance_payment) || 0) + (Number(patientForm.balance) || 0) + (Number(patientForm.discount) || 0)
       : 0;
 
-    const paymentStatus = (Number(patientForm.package_amount) > 0 && totalAmount === Number(patientForm.package_amount)) 
-      ? 'Fully Paid' 
+    const paymentStatus = (Number(patientForm.package_amount) > 0 && totalAmount === Number(patientForm.package_amount))
+      ? 'Fully Paid'
       : 'Due';
 
     const patientPayload = {
@@ -304,14 +352,14 @@ function App() {
       surgeon_name: patientForm.surgeon_name,
       anaesthetist_name: patientForm.anaesthetist_name,
       assistant_name: patientForm.assistant_name,
-      package_amount: Number(patientForm.package_amount) || 0,
-      advance_payment: Number(patientForm.advance_payment) || 0,
-      discount: Number(patientForm.discount) || 0,
-      remaining_amount: remaining_amount,
+      // package_amount: Number(patientForm.package_amount) || 0,
+      // advance_payment: Number(patientForm.advance_payment) || 0,
+      // discount: Number(patientForm.discount) || 0,
+      // remaining_amount: remaining_amount,
       photo_url: patientForm.patient_image,
       age: patientForm.age ? Number(patientForm.age) : null,
-      total_amount: totalAmount,
-      cash_method: patientForm.cash_method,
+      // total_amount: totalAmount,
+      // cash_method: patientForm.cash_method,
       surgeon_charge: Number(patientForm.surgeon_charge) || 0,
       anaesthetist_charge: Number(patientForm.anaesthetist_charge) || 0,
       assistant_charge: Number(patientForm.assistant_charge) || 0,
@@ -322,25 +370,60 @@ function App() {
       temperature: patientForm.temperature || '',
       heart: patientForm.heart || '',
       lungs: patientForm.lungs || '',
-      balance: Number(patientForm.balance) || 0,
-      payment_status: paymentStatus,
     };
+
+    if (userRole !== 'admin') {
+      Object.assign(patientPayload, {
+        package_amount: Number(patientForm.package_amount) || 0,
+        advance_payment: Number(patientForm.advance_payment) || 0,
+        discount: Number(patientForm.discount) || 0,
+        balance: Number(patientForm.balance) || 0,
+        remaining_amount: remaining_amount,
+        total_amount: totalAmount,
+        cash_method: patientForm.cash_method,
+        payment_status: paymentStatus,
+      });
+    }
 
     const request = editingPatientId
       ? supabase
         .from('patientDetailsTable')
         .update(patientPayload)
         .eq('id', editingPatientId)
-      : supabase.from('patientDetailsTable').insert(patientPayload);
+      : supabase.from('patientDetailsTable').insert(patientPayload).select().single();
 
-    const { error } = await request;
+    const { data: savedData, error } = await request;
 
     if (error) {
       setPatientMessage(error.message);
       setPatientsLoading(false);
       return;
     }
+    const savedPatientId = editingPatientId || (savedData && savedData.id);
 
+    if (savedPatientId && userRole === "admin") {
+      const paymentTable = "adminPatientPaymentDetailsTable";
+
+      const paymentPayload = {
+        patient_id: savedPatientId,
+        package_amount: Number(patientForm.package_amount) || 0,
+        advance_payment: Number(patientForm.advance_payment) || 0,
+        balance: Number(patientForm.balance) || 0,
+        discount: Number(patientForm.discount) || 0,
+        remaining_balance: remaining_amount,
+        total_amount: totalAmount,
+        cash_method: patientForm.cash_method,
+        payment_status: paymentStatus,
+      };
+
+      const { error: paymentUpsertError } = await supabase
+        .from(paymentTable)
+        .upsert(paymentPayload, { onConflict: 'patient_id' });
+
+      if (paymentUpsertError) {
+        console.error(paymentUpsertError);
+      }
+    }
     resetPatientForm();
     setShowPatientModal(false);
     await fetchPatients();
@@ -348,6 +431,9 @@ function App() {
 
   const handleEditPatient = (patient) => {
     setEditingPatientId(patient.id);
+    console.log("jdshgkjhsakgjhsdkjghka",patient.id);
+    console.log("jdshgkjhsakgjhsdkjghka",patient);
+    
     setPatientForm({
       first_name: patient.first_name || '',
       last_name: patient.last_name || '',

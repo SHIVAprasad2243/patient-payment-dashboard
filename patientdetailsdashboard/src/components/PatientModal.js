@@ -373,10 +373,8 @@ const PatientModal = ({
             </div>
           </div>
 
-          {userRole === 'admin' && (
-            <>
-              <div className="form-section">
-                <h3 className="section-title">Payment Details</h3>
+          <div className="form-section">
+            <h3 className="section-title">Payment Details</h3>
 
                 {/* Package Amount and Balance */}
                 <div className="form-row">
@@ -541,8 +539,6 @@ const PatientModal = ({
                   </div>
                 </div>
               </div>
-            </>
-          )}
 
           {patientMessage && (
             <p className="status-message">{patientMessage}</p>

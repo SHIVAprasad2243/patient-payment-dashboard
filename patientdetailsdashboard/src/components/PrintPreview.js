@@ -1,6 +1,11 @@
 import React from 'react';
 
-const PrintPreview = ({ selectedPatient, handlePrint, setShowPrintModal, userRole }) => {
+const PrintPreview = ({ selectedPatient, handlePrint, setShowPrintModal }) => {
+  const remainingBalance =
+    selectedPatient.remaining_amount !== undefined && selectedPatient.remaining_amount !== null
+      ? selectedPatient.remaining_amount
+      : (selectedPatient.remaining_balance || 0);
+
   return (
     <div className="modal-overlay print-modal-overlay">
       <div className="modal-content modal-large print-preview-modal">
@@ -59,22 +64,20 @@ const PrintPreview = ({ selectedPatient, handlePrint, setShowPrintModal, userRol
                 </div>
               </div>
 
-              {userRole === 'admin' && (
-                <div className="print-section">
-                  <hr className="print-divider" />
-                  <div className="print-billing-grid">
-                    <div className="billing-left">
-                      <div className="print-item"><strong>Package:</strong> ₹{selectedPatient.package_amount || 0}</div>
-                    </div>
-                    <div className="billing-right">
-                      <div className="print-item"><strong>Advance Payment:</strong> ₹{selectedPatient.advance_payment || 0}</div>
-                      <div className="print-item"><strong>Remaining Balance:</strong> ₹{selectedPatient.remaining_amount || 0}</div>
-                      <div className="print-item"><strong>Discount:</strong> ₹{selectedPatient.discount || 0}</div>
-                      <div className="print-item"><strong>Total Amount:</strong> ₹{selectedPatient.total_amount || 0}</div>
-                    </div>
+              <div className="print-section">
+                <hr className="print-divider" />
+                <div className="print-billing-grid">
+                  <div className="billing-left">
+                    <div className="print-item"><strong>Package:</strong> ₹{selectedPatient.package_amount || 0}</div>
+                  </div>
+                  <div className="billing-right">
+                    <div className="print-item"><strong>Advance Payment:</strong> ₹{selectedPatient.advance_payment || 0}</div>
+                    <div className="print-item"><strong>Remaining Balance:</strong> ₹{remainingBalance}</div>
+                    <div className="print-item"><strong>Discount:</strong> ₹{selectedPatient.discount || 0}</div>
+                    <div className="print-item"><strong>Total Amount:</strong> ₹{selectedPatient.total_amount || 0}</div>
                   </div>
                 </div>
-              )}
+              </div>
             </div>
 
             <div className="print-footer">

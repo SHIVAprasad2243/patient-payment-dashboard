@@ -23,6 +23,7 @@ describe('Payment calculations and Form fields', () => {
     total_amount: 10000,
     advance_payment: 5000,
     discount: 2000,
+    remaining_amount: 33000,
     photo_url: '',
     reg_no: '101',
     bill_no: '202',
@@ -92,8 +93,8 @@ describe('Payment calculations and Form fields', () => {
       />
     );
 
-    // Displays the Remaining Amount box: 50000 - 10000 - 5000 - 2000 = 33000
-    expect(screen.getByText('₹33000')).toBeInTheDocument();
+    // Displays the Remaining Amount box: 50000 - 0 (balance) - 5000 - 2000 = 43000
+    expect(screen.getByText('₹43000')).toBeInTheDocument();
   });
 
   test('PrintPreview displays correct Reg No and Bill No based on database properties', () => {

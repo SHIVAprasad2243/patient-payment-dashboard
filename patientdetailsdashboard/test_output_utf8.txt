@@ -1,0 +1,1905 @@
+﻿
+> patientdetailsdashboard@0.1.0 test
+> react-scripts test patientCalculation.test.js --watchAll=false
+
+node.exe : FAIL src/compone
+nts/patientCalculation.test
+.js
+At line:1 char:1
++ & "C:\Program 
+Files\nodejs/node.exe" 
+"C:\Program 
+Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~
+    + CategoryInfo         
+     : NotSpecified: (FAI  
+  L src/compon...ulation   
+ .test.js:String) [], R    
+emoteException
+    + FullyQualifiedErrorI 
+   d : NativeCommandError
+ 
+  Payment calculations and 
+Form fields
+    ├ù PatientTable 
+calculates and displays 
+correct Remaining Balance 
+(44 ms)
+    ├ù PatientModal shows 
+correct Remaining Amount 
+calculation in form (41 ms)
+    ΓêÜ PrintPreview 
+displays correct Reg No 
+and Bill No based on 
+database properties (40 ms)
+    ΓêÜ PatientModal 
+Phone, Alt Phone, Reg No, 
+and Bill No inputs have 
+correct restrictions (27 
+ms)
+
+  ΓùÅ Payment calculations 
+and Form fields ΓÇ║ 
+PatientTable calculates 
+and displays correct 
+Remaining Balance
+
+    TestingLibraryElementEr
+ror: Unable to find an 
+element with the text: 
+Γé╣33000. This could be 
+because the text is broken 
+up by multiple elements. 
+In this case, you can 
+provide a function for 
+your text matcher to make 
+your matcher more flexible.
+
+    Ignored nodes: 
+comments, script, style
+    [36m<body>[39m
+      [36m<div>[39m
+        [36m<div[39m
+          [33mclass[39m=
+[32m"records-table-containe
+r"[39m
+        [36m>[39m
+          [36m<table[39m
+            [33mclass[39m
+=[32m"records-table"[39m
+          [36m>[39m
+            
+[36m<thead>[39m
+              
+[36m<tr>[39m
+                
+[36m<th>[39m
+                  
+[0mPatient Name[0m
+                
+[36m</th>[39m
+                
+[36m<th>[39m
+                  
+[0mAge/Sex[0m
+                
+[36m</th>[39m
+                
+[36m<th>[39m
+                  
+[0mRelative Name[0m
+                
+[36m</th>[39m
+                
+[36m<th>[39m
+                  [0mCell 
+No[0m
+                
+[36m</th>[39m
+                
+[36m<th>[39m
+                  
+[0mAdmission Date[0m
+                
+[36m</th>[39m
+                
+[36m<th>[39m
+                  
+[0mDiagnosis[0m
+                
+[36m</th>[39m
+                
+[36m<th>[39m
+                  
+[0mSurgeon[0m
+                
+[36m</th>[39m
+                
+[36m<th>[39m
+                  
+[0mAnaesthetist[0m
+                
+[36m</th>[39m
+                
+[36m<th>[39m
+                  
+[0mAssistant[0m
+                
+[36m</th>[39m
+                
+[36m<th>[39m
+                  
+[0mRemaining Balance[0m
+                
+[36m</th>[39m
+                
+[36m<th>[39m
+                  
+[0mTotal Amount[0m
+                
+[36m</th>[39m
+                
+[36m<th>[39m
+                  
+[0mPayment status[0m
+                
+[36m</th>[39m
+                
+[36m<th>[39m
+                  
+[0mPayment method[0m
+                
+[36m</th>[39m
+                
+[36m<th>[39m
+                  
+[0mActions[0m
+                
+[36m</th>[39m
+              
+[36m</tr>[39m
+            
+[36m</thead>[39m
+            
+[36m<tbody>[39m
+              
+[36m<tr>[39m
+                
+[36m<td[39m
+                  [33mclas
+s[39m=[32m"font-bold"[39
+m
+                [36m>[39m
+                  
+[36m<div[39m
+                    [33mcl
+ass[39m=[32m"table-patien
+t-info"[39m
+                  
+[36m>[39m
+                    
+[36m<div[39m
+                      [33m
+class[39m=[32m"table-avat
+ar-placeholder"[39m
+                    
+[36m>[39m
+                      
+[0mJ[0m
+                    
+[36m</div>[39m
+                    
+[36m<span>[39m
+                      
+[0mJohn[0m
+                      [0m 
+[0m
+                      
+[0mDoe[0m
+                    
+[36m</span>[39m
+                  
+[36m</div>[39m
+                
+[36m</td>[39m
+                
+[36m<td>[39m
+                  
+[0m30[0m
+                  [0m/[0m
+                  [0mM[0m
+                
+[36m</td>[39m
+                
+[36m<td>[39m
+                  [0mJane 
+Doe[0m
+                
+[36m</td>[39m
+                
+[36m<td>[39m
+                  [0m+91 
+1234567890[0m
+                
+[36m</td>[39m
+                
+[36m<td>[39m
+                  
+[0m2026-07-10[0m
+                
+[36m</td>[39m
+                
+[36m<td>[39m
+                  
+[36m<div[39m
+                    [33mcl
+ass[39m=[32m"diagnosis-ce
+ll"[39m
+                    [33mti
+tle[39m=[32m"Hernia"[39m
+                  
+[36m>[39m
+                    
+[0mHernia[0m
+                  
+[36m</div>[39m
+                
+[36m</td>[39m
+                
+[36m<td>[39m
+                  [0mDr. 
+Ramesh[0m
+                
+[36m</td>[39m
+                
+[36m<td>[39m
+                  [0mDr. 
+Anitha[0m
+                
+[36m</td>[39m
+                
+[36m<td>[39m
+                  [0mMr. 
+Raju[0m
+                
+[36m</td>[39m
+                
+[36m<td>[39m
+                  
+[0mΓé╣[0m
+                  [0m0[0m
+                
+[36m</td>[39m
+                
+[36m<td>[39m
+                  
+[0mΓé╣[0m
+                  
+[0m10000[0m
+                
+[36m</td>[39m
+                
+[36m<td>[39m
+                  
+[36m<span[39m
+                    [33mcl
+ass[39m=[32m"status-badge
+ due"[39m
+                  
+[36m>[39m
+                    
+[0mDue[0m
+                  
+[36m</span>[39m
+                
+[36m</td>[39m
+                
+[36m<td>[39m
+                  [0mNot 
+Selected[0m
+                
+[36m</td>[39m
+                
+[36m<td>[39m
+                  
+[36m<div[39m
+                    [33mcl
+ass[39m=[32m"table-action
+s"[39m
+                  
+[36m>[39m
+                    
+[36m<button[39m
+                      [33m
+class[39m=[32m"text-butto
+n print-btn"[39m
+                      [33m
+title[39m=[32m"Print 
+Preview"[39m
+                    
+[36m>[39m
+                      
+[0m≡ƒû¿∩╕Å[0m
+                    
+[36m</button>[39m
+                    
+[36m<button[39m
+                      [33m
+class[39m=[32m"text-butto
+n edit-btn"[39m
+                      [33m
+title[39m=[32m"Edit"[39m
+                    
+[36m>[39m
+                      
+[0mΓ£Ä[0m
+                    
+[36m</button>[39m
+                    
+[36m<button[39m
+                      [33m
+class[39m=[32m"text-butto
+n delete-btn"[39m
+                      [33m
+title[39m=[32m"Delete"[3
+9m
+                    
+[36m>[39m
+                      
+[0m≡ƒùæ[0m
+                    
+[36m</button>[39m
+                  
+[36m</div>[39m
+                
+[36m</td>[39m
+              
+[36m</tr>[39m
+            
+[36m</tbody>[39m
+          
+[36m</table>[39m
+        [36m</div>[39m
+      [36m</div>[39m
+    [36m</body>[39m
+
+    [0m [90m 42 |[39m
+     [90m 43 |[39m     
+[90m// Remaining Balance 
+calculated: 50000 - 10000 
+- 5000 - 2000 = 33000[39m
+    
+[31m[1m>[22m[39m[90m 
+44 |[39m     expect(screen
+[33m.[39mgetByText([32m'
+Γé╣33000'[39m))[33m.[39m
+toBeInTheDocument()[33m;[
+39m
+     [90m    |[39m       
+            
+[31m[1m^[22m[39m
+     [90m 45 |[39m     
+[90m// Total Pay 
+displayed: Γé╣10000[39m
+     [90m 46 |[39m     ex
+pect(screen[33m.[39mgetBy
+Text([32m'Γé╣10000'[39m))
+[33m.[39mtoBeInTheDocumen
+t()[33m;[39m
+     [90m 47 |[39m   
+})[33m;[39m[0m
+
+      at 
+Object.getElementError (nod
+e_modules/@testing-library/
+dom/dist/config.js:37:19)
+      at node_modules/@test
+ing-library/dom/dist/query-
+helpers.js:76:38
+      at node_modules/@test
+ing-library/dom/dist/query-
+helpers.js:52:17
+      at getByText (node_mo
+dules/@testing-library/dom/
+dist/query-helpers.js:95:19
+)
+      at 
+Object.<anonymous> (src/com
+ponents/patientCalculation.
+test.js:44:19)
+      at TestScheduler.sche
+duleTests (node_modules/@je
+st/core/build/TestScheduler
+.js:333:13)
+      at runJest (node_modu
+les/@jest/core/build/runJes
+t.js:404:19)
+      at _run10000 (node_mo
+dules/@jest/core/build/cli/
+index.js:320:7)
+      at runCLI (node_modul
+es/@jest/core/build/cli/ind
+ex.js:173:3)
+
+  ΓùÅ Payment calculations 
+and Form fields ΓÇ║ 
+PatientModal shows correct 
+Remaining Amount 
+calculation in form
+
+    TestingLibraryElementEr
+ror: Unable to find an 
+element with the text: 
+Γé╣33000. This could be 
+because the text is broken 
+up by multiple elements. 
+In this case, you can 
+provide a function for 
+your text matcher to make 
+your matcher more flexible.
+
+    Ignored nodes: 
+comments, script, style
+    [36m<body>[39m
+      [36m<div>[39m
+        [36m<div[39m
+          [33mclass[39m=
+[32m"modal-overlay"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m
+=[32m"modal-content 
+modal-large"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[3
+9m=[32m"modal-header"[39m
+            [36m>[39m
+              
+[36m<h2>[39m
+                [0mNew 
+Patient Record[0m
+              
+[36m</h2>[39m
+              
+[36m<button[39m
+                [33mclass
+[39m=[32m"close-modal"[39
+m
+                [33mtitle
+[39m=[32m"Cancel"[39m
+              [36m>[39m
+                [0m├ù[0m
+              
+[36m</button>[39m
+            
+[36m</div>[39m
+            [36m<form[39m
+              [33mclass[3
+9m=[32m"patient-form 
+scrollable-form"[39m
+            [36m>[39m
+              
+[36m<div[39m
+                [33mclass
+[39m=[32m"image-upload-sec
+tion"[39m
+              [36m>[39m
+                
+[36m<div[39m
+                  [33mclas
+s[39m=[32m"image-preview-
+container"[39m
+                [36m>[39m
+                  
+[36m<div[39m
+                    [33mcl
+ass[39m=[32m"placeholder-
+icon"[39m
+                  
+[36m>[39m
+                    
+[0m≡ƒæñ[0m
+                  
+[36m</div>[39m
+                
+[36m</div>[39m
+                
+[36m<label[39m
+                  [33mclas
+s[39m=[32m"upload-label"
+[39m
+                [36m>[39m
+                  
+[0mUpload Patient 
+Photo[0m
+                  
+[36m<input[39m
+                    [33mac
+cept[39m=[32m"image/*"[3
+9m
+                    [33mcl
+ass[39m=[32m"hidden-input
+"[39m
+                    [33mty
+pe[39m=[32m"file"[39m
+                  
+[36m/>[39m
+                
+[36m</label>[39m
+                
+[36m<p[39m
+                  [33mclas
+s[39m=[32m"helper-text-sm
+all"[39m
+                [36m>[39m
+                  
+[0mFormat: JPG, PNG. Max 
+size: 2MB[0m
+                
+[36m</p>[39m
+              
+[36m</div>[39m
+              
+[36m<div[39m
+                [33mclass
+[39m=[32m"form-section"[3
+9m
+              [36m>[39m
+                
+[36m<div[39m
+                  [33mclas
+s[39m=[32m"form-row"[39m
+                [36m>[39m
+                  
+[36m<div>[39m
+                    
+[36m<label>[39m
+                      
+[0mFirst name[0m
+                    
+[36m</label>[39m
+                    
+[36m<input[39m
+                      [33m
+name[39m=[32m"first_name"
+[39m
+                      [33m
+placeholder[39m=[32m"Firs
+t name"[39m
+                      [33m
+required[39m=[32m""[39m
+                      [33m
+type[39m=[32m"text"[39m
+                      [33m
+value[39m=[32m"John"[39m
+                    
+[36m/>[39m
+                  
+[36m</div>[39m
+                  
+[36m<div>[39m
+                    
+[36m<label>[39m
+                      
+[0mLast name[0m
+                    
+[36m</label>[39m
+                    
+[36m<input[39m
+                      [33m
+name[39m=[32m"last_name"
+[39m
+                      [33m
+placeholder[39m=[32m"Last
+ name"[39m
+                      [33m
+type[39m=[32m"text"[39m
+                      [33m
+value[39m=[32m"Doe"[39m
+                    
+[36m/>[39m
+                  
+[36m</div>[39m
+                
+[36m</div>[39m
+                
+[36m<div[39m
+                  [33mclas
+s[39m=[32m"form-row"[39m
+                [36m>[39m
+                  
+[36m<div>[39m
+                    
+[36m<label>[39m
+                      
+[0mAge[0m
+                    
+[36m</label>[39m
+                    
+[36m<input[39m
+                      [33m
+name[39m=[32m"age"[39m
+                      [33m
+placeholder[39m=[32m"Age"
+[39m
+                      [33m
+type[39m=[32m"number"[39
+m
+                      [33m
+value[39m=[32m"30"[39m
+                    
+[36m/>[39m
+                  
+[36m</div>[39m
+                  
+[36m<div>[39m
+                    
+[36m<label>[39m
+                      
+[0mGender[0m
+                    
+[36m</label>[39m
+                    
+[36m<select[39m
+                      [33m
+name[39m=[32m"gender"[39
+m
+                      [33m
+required[39m=[32m""[39m
+                    
+[36m>[39m
+                      
+[36m<option[39m
+                        [3
+3mvalue[39m=[32m""[39m
+                      
+[36m>[39m
+                        
+[0mSelect Gender[0m
+                      
+[36m</option>[39m
+                      
+[36m<option[39m
+                        [3
+3mvalue[39m=[32m"Male"[3
+9m
+                      
+[36m>[39m
+                        
+[0mMale[0m
+                      
+[36m</option>[39m
+                      
+[36m<option[39m
+                        [3
+3mvalue[39m=[32m"Female"
+[39m
+                      
+[36m>[39m
+                        
+[0mFemale[0m
+                      
+[36m</option>[39m
+                      
+[36m<option[39m
+                        [3
+3mvalue[39m=[32m"Other"[
+39m
+                      
+[36m>[39m
+                        
+[0mOther[0m
+                      
+[36m</option>[39m
+                    
+[36m</select>[39m
+                  
+[36m</div>[39m
+                
+[36m</div>[39m
+                
+[36m<div[39m
+                  [33mclas
+s[39m=[32m"form-row"[39m
+                [36m>[39m
+                  
+[36m<div>[39m
+                    
+[36m<label>[39m
+                      
+[0mPhone Number (Cell 
+No)[0m
+                    
+[36m</label>[39m
+                    
+[36m<input[39m
+                      [33m
+maxlength[39m=[32m"14"[3
+9m
+                      [33m
+minlength[39m=[32m"14"[3
+9m
+                      [33m
+name[39m=[32m"cell_no"[3
+9m
+                      [33m
+pattern[39m=[32m"\\+91 
+[0-9]{10}"[39m
+                      [33m
+placeholder[39m=[32m"Phon
+e number"[39m
+                      [33m
+required[39m=[32m""[39m
+                      [33m
+type[39m=[32m"tel"[39m
+                      
+[33mvalue[39m=[32m"+91 
+1234567890"[39m
+                    
+[36m/>[39m
+                  
+[36m</div>[39m
+                  
+[36m<div>[39m
+                    
+[36m<label>[39m
+                      
+[0mRelative Name[0m
+                    
+[36m</label>[39m
+                    
+[36m<input[39m
+                      [33m
+name[39m=[32m"husband_nam
+e"[39m
+                      [33m
+placeholder[39m=[32m"Rela
+tive Name"[39m
+                      [33m
+type[39m=[32m"text"[39m
+                      
+[33mvalue[39m=[32m"Jane 
+Doe"[39m
+                    
+[36m/>[39m
+                  
+[36m</div>[39m
+                
+[36m</div>[39m
+                
+[36m<div[39m
+                  [33mclas
+s[39m=[32m"form-row"[39m
+                [36m>[39m
+                  
+[36m<div>[39m
+                    
+[36m<label>[39m
+                      
+[0mAlternative number[0m
+                    
+[36m</label>[39m
+                    
+[36m<input[39m
+                      [33m
+maxlength[39m=[32m"14"[3
+9m
+                      [33m
+minlength[39m=[32m"14"[3
+9m
+                      [33m
+name[39m=[32m"alternative
+_number"[39m
+                      [33m
+pattern[39m=[32m"\\+91 
+[0-9]{10}"[39m
+                      [33m
+placeholder[39m=[32m"Alt 
+number"[39m
+                      [33m
+type[39m=[32m"tel"[39m
+                      [33m
+value[39m=[32m""[39m
+                    
+[36m/>[39m
+                  
+[36m</div>[39m
+                  
+[36m<div>[39m
+                    
+[36m<label>[39m
+                      
+[0mDate of admission[0m
+                    
+[36m</label>[39m
+                    
+[36m<input[39m
+                      [33m
+name[39m=[32m"date_of_adm
+ission"[39m
+                      [33m
+type[39m=[32m"date"[39m
+                      [33m
+value[39m=[32m"2026-07-10
+"[39m
+                    
+[36m/>[39m
+                  
+[36m</div>[39m
+                
+[36m</div>[39m
+                
+[36m<div[39m
+                  [33mclas
+s[39m=[32m"form-row"[39m
+                [36m>[39m
+                  
+[36m<div>[39m
+                    
+[36m<label>[39m
+                      
+[0mReg No[0m
+                    
+[36m</label>[39m
+                    
+[36m<input[39m
+                      [33m
+name[39m=[32m"reg_no"[39
+m
+                      [33m
+pattern[39m=[32m"[0-9]*"
+[39m
+                      [33m
+placeholder[39m=[32m"Reg 
+No"[39m
+                      [33m
+type[39m=[32m"text"[39m
+                      [33m
+value[39m=[32m"101"[39m
+                    
+[36m/>[39m
+                  
+[36m</div>[39m
+                  
+[36m<div>[39m
+                    
+[36m<label>[39m
+                      
+[0mBill No[0m
+                    
+[36m</label>[39m
+                    
+[36m<input[39m
+                      [33m
+name[39m=[32m"bill_no"[3
+9m
+                      [33m
+pattern[39m=[32m"[0-9]*"
+[39m
+                      [33m
+placeholder[39m=[32m"Bill
+ No"[39m
+                      [33m
+type[39m=[32m"text"[39m
+                      [33m
+value[39m=[32m"202"[39m
+                    
+[36m/>[39m
+                  
+[36m</div>[39m
+                
+[36m</div>[39m
+                
+[36m<div>[39m
+                  
+[36m<label>[39m
+                    
+[0mAddress[0m
+                  
+[36m</label>[39m
+                  
+[36m<textarea[39m
+                    [33mna
+me[39m=[32m"address"[39m
+                    [33mpl
+aceholder[39m=[32m"Full 
+address"[39m
+                    [33mro
+ws[39m=[32m"2"[39m
+                  
+[36m/>[39m
+                
+[36m</div>[39m
+              
+[36m</div>[39m
+              
+[36m<div[39m
+                [33mclass
+[39m=[32m"form-section"[3
+9m
+              [36m>[39m
+                
+[36m<h3[39m
+                  [33mclas
+s[39m=[32m"section-title"
+[39m
+                [36m>[39m
+                  
+[0mSurgery & Diagnosis[0m
+                
+[36m</h3>[39m
+                
+[36m<div[39m
+                  [33mclas
+s[39m=[32m"form-row"[39m
+                [36m>[39m
+                  
+[36m<div>[39m
+                    
+[36m<label>[39m
+                      
+[0mDiagnosis[0m
+                    
+[36m</label>[39m
+                    
+[36m<input[39m
+                      [33m
+list[39m=[32m"diagnosis-l
+ist"[39m
+                      [33m
+name[39m=[32m"diagnosis"
+[39m
+                      [33m
+placeholder[39m=[32m"Sele
+ct or type 
+diagnosis..."[39m
+                      [33m
+value[39m=[32m"Hernia"[3
+9m
+                    
+[36m/>[39m
+                    
+[36m<datalist[39m
+                      [33m
+id[39m=[32m"diagnosis-lis
+t"[39m
+                    
+[36m/>[39m
+                  
+[36m</div>[39m
+                  
+[36m<div>[39m
+                    
+[36m<label>[39m
+                      
+[0mSurgeon Name[0m
+                    
+[36m</label>[39m
+                    
+[36m<input[39m
+                      [33m
+list[39m=[32m"surgeon-lis
+t"[39m
+                      [33m
+name[39m=[32m"surgeon_nam
+e"[39m
+                      [33m
+placeholder[39m=[32m"Surg
+eon Name"[39m
+                      [33m
+type[39m=[32m"text"[39m
+                      
+[33mvalue[39m=[32m"Dr. 
+Ramesh"[39m
+                    
+[36m/>[39m
+                    
+[36m<datalist[39m
+                      [33m
+id[39m=[32m"surgeon-list"
+[39m
+                    
+[36m/>[39m
+                  
+[36m</div>[39m
+                
+[36m</div>[39m
+                
+[36m<div[39m
+                  [33mclas
+s[39m=[32m"form-row"[39m
+                [36m>[39m
+                  
+[36m<div>[39m
+                    
+[36m<label>[39m
+                      
+[0mAnaesthetist Name[0m
+                    
+[36m</label>[39m
+                    
+[36m<input[39m
+                      [33m
+list[39m=[32m"anaesthetis
+t-list"[39m
+                      [33m
+name[39m=[32m"anaesthetis
+t_name"[39m
+                      [33m
+placeholder[39m=[32m"Anae
+sthetist Name"[39m
+                      [33m
+type[39m=[32m"text"[39m
+                      
+[33mvalue[39m=[32m"Dr. 
+Anitha"[39m
+                    
+[36m/>[39m
+                    
+[36m<datalist[39m
+                      [33m
+id[39m=[32m"anaesthetist-
+list"[39m
+                    
+[36m/>[39m
+                  
+[36m</div>[39m
+                  
+[36m<div>[39m
+                    
+[36m<label>[39m
+                      
+[0mAssistant Name[0m
+                    
+[36m</label>[39m
+                    
+[36m<input[39m
+                      [33m
+list[39m=[32m"assistant-l
+ist"[39m
+                      [33m
+name[39m=[32m"assistant_n
+ame"[39m
+                      [33m
+placeholder[39m=[32m"Assi
+stant Name"[39m
+                      [33m
+type[39m=[32m"text"[39m
+                      
+[33mvalue[39m=[32m"Mr. 
+Raju"[39m
+                    
+[36m/>[39m
+                    
+[36m<datalist[39m
+                      [33m
+id[39m=[32m"assistant-lis
+t"[39m
+                    
+[36m/>[39m
+                  
+[36m</div>[39m
+                
+[36m</div>[39m
+              
+[36m</div>[39m
+              
+[36m<div[39m
+                [33mclass
+[39m=[32m"form-section"[3
+9m
+              [36m>[39m
+                
+[36m<h3[39m
+                  [33mclas
+s[39m=[32m"section-title"
+[39m
+                [36m>[39m
+                  [0mPt. 
+is Conscious/Coherent[0m
+                
+[36m</h3>[39m
+                
+[36m<div[39m
+                  [33mclas
+s[39m=[32m"form-row"[39m
+                [36m>[39m
+                  
+[36m<div>[39m
+                    
+[36m<label>[39m
+                      
+[0mBP[0m
+                    
+[36m</label>[39m
+                    
+[36m<div[39m
+                      [33m
+class[39m=[32m"measuremen
+t-input"[39m
+                    
+[36m>[39m
+                      
+[36m<input[39m
+                        [3
+3mname[39m=[32m"bp"[39m
+                        [3
+3mplaceholder[39m=[32m"En
+ter BP"[39m
+                        [3
+3mtype[39m=[32m"text"[39
+m
+                      
+[36m/>[39m
+                      
+[36m<span[39m
+                        [3
+3mclass[39m=[32m"measurem
+ent-unit"[39m
+                      
+[36m>[39m
+                        
+[0mmmHg[0m
+                      
+[36m</span>[39m
+                    
+[36m</div>[39m
+                  
+[36m</div>[39m
+                  
+[36m<div>[39m
+                    
+[36m<label>[39m
+                      
+[0mPR[0m
+                    
+[36m</label>[39m
+                    
+[36m<div[39m
+                      [33m
+class[39m=[32m"measuremen
+t-input"[39m
+                    
+[36m>[39m
+                      
+[36m<input[39m
+                        [3
+3mname[39m=[32m"pr"[39m
+                        [3
+3mplaceholder[39m=[32m"En
+ter PR"[39m
+                        [3
+3mtype[39m=[32m"number"[
+39m
+                      
+[36m/>[39m
+                      
+[36m<span[39m
+                        [3
+3mclass[39m=[32m"measurem
+ent-unit"[39m
+                      
+[36m>[39m
+                        
+[0m/min[0m
+                      
+[36m</span>[39m
+                    
+[36m</div>[39m
+                  
+[36m</div>[39m
+                
+[36m</div>[39m
+                
+[36m<div[39m
+                  [33mclas
+s[39m=[32m"form-row"[39m
+                [36m>[39m
+                  
+[36m<div>[39m
+                    
+[36m<label>[39m
+                      
+[0mRR[0m
+                    
+[36m</label>[39m
+                    
+[36m<div[39m
+                      [33m
+class[39m=[32m"measuremen
+t-input"[39m
+                    
+[36m>[39m
+                      
+[36m<input[39m
+                        [3
+3mname[39m=[32m"rr"[39m
+                        [3
+3mplaceholder[39m=[32m"En
+ter RR"[39m
+                        [3
+3mtype[39m=[32m"number"[
+39m
+                      
+[36m/>[39m
+                      
+[36m<span[39m
+                        [3
+3mclass[39m=[32m"measurem
+ent-unit"[39m
+                      
+[36m>[39m
+                        
+[0m/min[0m
+                      
+[36m</span>[39m
+                    
+[36m</div>[39m
+                  
+[36m</div>[39m
+                  
+[36m<div>[39m
+                    
+[36m<label>[39m
+                      
+[0mSpOΓéé[0m
+                    
+[36m</label>[39m
+                    
+[36m<div[39m
+                      [33m
+class[39m=[32m"measuremen
+t-input"[39m
+                    
+[36m>[39m
+                      
+[36m<input[39m
+                        [3
+3mname[39m=[32m"spo2"[39
+m
+                        [3
+3mplaceholder[39m=[32m"En
+ter SpOΓéé"[39m
+                        [3
+3mtype[39m=[32m"number"[
+39m
+                      
+[36m/>[39m
+                      
+[36m<span[39m
+                        [3
+3mclass[39m=[32m"measurem
+ent-unit"[39m
+                      
+[36m>[39m
+                        
+[0m%[0m
+                      
+[36m</span>[39m
+                    
+[36m</div>[39m
+                  
+[36m</div>[39m
+                
+[36m</div>[39m
+                
+[36m<div[39m
+                  [33mclas
+s[39m=[32m"form-row"[39m
+                [36m>[39m
+                  
+[36m<div>[39m
+                    
+[36m<label>[39m
+                      
+[0mTemperature[0m
+                    
+[36m</label>[39m
+                    
+[36m<div[39m
+                      [33m
+class[39m=[32m"measuremen
+t-input"[39m
+                    
+[36m>[39m
+                      
+[36m<input[39m
+                        [3
+3mname[39m=[32m"temperatu
+re"[39m
+                        [3
+3mplaceholder[39m=[32m"En
+ter temperature"[39m
+                        [3
+3mstep[39m=[32m"0.1"[39m
+                        [3
+3mtype[39m=[32m"number"[
+39m
+                      
+[36m/>[39m
+                      
+[36m<span[39m
+                        [3
+3mclass[39m=[32m"measurem
+ent-unit"[39m
+                      
+[36m>[39m
+                        
+[0m┬░F[0m
+                      
+[36m</span>[39m
+                    
+[36m</div>[39m
+                  
+[36m</div>[39m
+                  
+[36m<div>[39m
+                    
+[36m<label>[39m
+                      
+[0mHeart[0m
+                    
+[36m</label>[39m
+                    
+[36m<input[39m
+                      [33m
+name[39m=[32m"heart"[39m
+                      [33m
+placeholder[39m=[32m"Ente
+r heart details"[39m
+                      [33m
+type[39m=[32m"text"[39m
+                    
+[36m/>[39m
+                  
+[36m</div>[39m
+                
+[36m</div>[39m
+                
+[36m<div[39m
+                  [33mclas
+s[39m=[32m"form-row"[39m
+                [36m>[39m
+                  
+[36m<div>[39m
+                    
+[36m<label>[39m
+                      
+[0mLungs[0m
+                    
+[36m</label>[39m
+                    
+[36m<input[39m
+                      [33m
+name[39m=[32m"lungs"[39m
+                      [33m
+placeholder[39m=[32m"Ente
+r lungs details"[39m
+                      [33m
+type[39m=[32m"text"[39m
+                    
+[36m/>[39m
+                  
+[36m</div>[39m
+                
+[36m</div>[39m
+              
+[36m</div>[39m
+              
+[36m<div[39m
+                [33mclass
+[39m=[32m"form-section"[3
+9m
+              [36m>[39m
+                
+[36m<h3[39m
+                  [33mclas
+s[39m=[32m"section-title"
+[39m
+                [36m>[39m
+                  
+[0mPayment Details[0m
+                
+[36m</h3>[39m
+                
+[36m<div[39m
+                  [33mclas
+s[39m=[32m"form-row"[39m
+                [36m>[39m
+                  
+[36m<div>[39m
+                    
+[36m<label>[39m
+                      
+[0mPackage Amount 
+(Γé╣)[0m
+                    
+[36m</label>[39m
+                    
+[36m<input[39m
+                      [33m
+name[39m=[32m"package_amo
+unt"[39m
+                      [33m
+placeholder[39m=[32m"0"[
+39m
+                      [33m
+type[39m=[32m"number"[39
+m
+                      [33m
+value[39m=[32m"50000"[39
+m
+                    
+[36m/>[39m
+                  
+[36m</div>[39m
+                  
+[36m<div>[39m
+                    
+[36m<label>[39m
+                      
+[0mAdvance Payment 
+(Γé╣)[0m
+                    
+[36m</label>[39m
+                    
+[36m<input[39m
+                      [33m
+name[39m=[32m"advance_pay
+ment"[39m
+                      [33m
+placeholder[39m=[32m"0"[
+39m
+                      [33m
+type[39m=[32m"number"[39
+m
+                      [33m
+value[39m=[32m"5000"[39m
+                    
+[36m/>[39m
+                  
+[36m</div>[39m
+                
+[36m</div>[39m
+                
+[36m<div[39m
+                  [33mclas
+s[39m=[32m"form-row"[39m
+                [36m>[39m
+                  
+[36m<div>[39m
+                    
+[36m<label>[39m
+                      
+[0mBalance (Γé╣)[0m
+                    
+[36m</label>[39m
+                    
+[36m<input[39m
+                      [33m
+name[39m=[32m"balance"[3
+9m
+                      [33m
+placeholder[39m=[32m"0"[
+39m
+                      [33m
+type[39m=[32m"number"[39
+m
+                      [33m
+value[39m=[32m""[39m
+                    
+[36m/>[39m
+                  
+[36m</div>[39m
+                  
+[36m<div>[39m
+                    
+[36m<label>[39m
+                      
+[0mDiscount (Γé╣)[0m
+                    
+[36m</label>[39m
+                    
+[36m<input[39m
+                      [33m
+name[39m=[32m"discount"[
+39m
+                      [33m
+placeholder[39m=[32m"0"[
+39m
+                      [33m
+type[39m=[32m"number"[39
+m
+                      [33m
+value[39m=[32m"2000"[39m
+                    
+[36m/>[39m
+                  
+[36m</div>[39m
+                
+[36m</div>[39m
+                
+[36m<div[39m
+                  [33mclas
+s[39m=[32m"form-row"[39m
+                [36m>[39m
+                  
+[36m<div>[39m
+                    
+[36m<label>[39m
+                      
+[0mRemaining Balance 
+(Γé╣)[0m
+                    
+[36m</label>[39m
+                    
+[36m<div[39m
+                      [33m
+class[39m=[32m"balance-bo
+x"[39m
+                    
+[36m>[39m
+                      
+[0mΓé╣[0m
+                      
+[0m43000[0m
+                    
+[36m</div>[39m
+                  
+[36m</div>[39m
+                  
+[36m<div>[39m
+                    
+[36m<label>[39m
+                      
+[0mTotal Amount (Γé╣)[0m
+                    
+[36m</label>[39m
+                    
+[36m<div[39m
+                      [33m
+class[39m=[32m"balance-bo
+x"[39m
+                    
+[36m>[39m
+                      
+[0mΓé╣[0m
+                      
+[0m7000[0m
+                    
+[36m</div>[39m
+                  
+[36m</div>[39m
+                
+[36m</div>[39m
+                
+[36m<div[39m
+                  [33mclas
+s[39m=[32m"form-row"[39m
+                [36m>[39m
+                  
+[36m<div>[39m
+                    
+[36m<label>[39m
+                      
+[0mCash Method[0m
+                    
+[36m</label>[39m
+                    
+[36m<select[39m
+                      [33m
+class[39m=[32m"full-width
+-input"[39m
+                      [33m
+name[39m=[32m"cash_method
+"[39m
+                    
+[36m>[39m
+                      
+[36m<option[39m
+                        [3
+3mvalue[39m=[32m""[39m
+                      
+[36m>[39m
+                        
+[0mSelect Method[0m
+                      
+[36m</option>[39m
+                      
+[36m<option[39m
+                        [3
+3mvalue[39m=[32m"Cash"[3
+9m
+                      
+[36m>[39m
+                        
+[0mCash[0m
+                      
+[36m</option>[39m
+                      
+[36m<option[39m
+                        [3
+3mvalue[39m=[32m"PhonePay
+"[39m
+                      
+[36m>[39m
+                        
+[0mPhonePay[0m
+                      
+[36m</option>[39m
+                      
+[36m<option[39m
+                        [3
+3mvalue[39m=[32m"GPay"[3
+9m
+                      
+[36m>[39m
+                        
+[0mGPay[0m
+                      
+[36m</option>[39m
+                      
+[36m<option[39m
+                        [3
+3mvalue[39m=[32m"Scanner"
+[39m
+                      
+[36m>[39m
+                        
+[0mScanner[0m
+                      
+[36m</option>[39m
+                      
+[36m<option[39m
+                        [3
+3mvalue[39m=[32m"Other"[
+39m
+                      
+[36m>[39m
+                        
+[0mOther[0m
+                      
+[36m</option>[39m
+                    
+[36m</select>[39m
+                  
+[36m</div>[39m
+                  
+[36m<div>[39m
+                    
+[36m<label>[39m
+                      
+[0mPayment Status[0m
+                    
+[36m</label>[39m
+                    
+[36m<div[39m
+                      [33m
+class[39m=[32m"payment-st
+atus-box due"[39m
+                    
+[36m>[39m
+                      
+[0mDue[0m
+                    
+[36m</div>[39m
+                  
+[36m</div>[39m
+                
+[36m</div>[39m
+              
+[36m</div>[39m
+              
+[36m<div[39m
+                [33mclass
+[39m=[32m"form-section"[3
+9m
+              [36m>[39m
+                
+[36m<h3[39m
+                  [33mclas
+s[39m=[32m"section-title"
+[39m
+                [36m>[39m
+                  
+[0mProfessional 
+Charges[0m
+                
+[36m</h3>[39m
+                
+[36m<div[39m
+                  [33mclas
+s[39m=[32m"form-row"[39m
+                [36m>[39m
+                  
+[36m<div>[39m
+                    
+[36m<label>[39m
+                      
+[0mSurgeon Charge 
+(Γé╣)[0m
+                    
+[36m</label>[39m
+                    
+[36m<input[39m
+                      [33m
+name[39m=[32m"surgeon_cha
+rge"[39m
+                      [33m
+placeholder[39m=[32m"0"[
+39m
+                      [33m
+type[39m=[32m"number"[39
+m
+                      [33m
+value[39m=[32m""[39m
+                    
+[36m/>[39m
+                  
+[36m</div>[39m
+                  
+[36m<div>[39m
+                    
+[36m<label>[39m
+                      
+[0mAnaesthetist Charge 
+(Γé╣)[0m
+                    
+[36m</label>[39m
+                    
+[36m<input[39m
+                      [33m
+name[39m=[32m"anaesthetis
+t_charge"[39m
+                      [33m
+placeholder[39m=[32m"0"[
+39m
+                      [33m
+type[39m=[32m"number"[39
+m
+                      [33m
+value[39m=[32m""[39m
+                    
+[36m/>[39m
+                  
+[36m</div>[39m
+                
+[36m</div>[39m
+                
+[36m<div[39m
+                  [33mclas
+s[39m=[32m"form-row"[39m
+                [36m>[39m
+                  
+[36m<div>[39m
+                    
+[36m<label>[39m
+                      
+[0mAssistant Charge 
+(Γé╣)[0m
+                    
+[36m</label>[39m
+                    
+[36m<input[39m
+                      [33m
+name[39m=[32m"assistant_c
+harge"[39m
+                      [33m
+placeholder[39m=[32m"0"[
+39m
+                      [33m
+type[39m=[32m"number"[39
+m
+                      [33m
+value[39m=[32m""[39m
+                    
+[36m/>[39m
+                  
+[36m</div>[39m
+                
+[36m</div>[39m
+              
+[36m</div>[39m
+              
+[36m<div[39m
+                [33mclass
+[39m=[32m"form-actions-row
+"[39m
+              [36m>[39m
+                
+[36m<button[39m
+                  [33mclas
+s[39m=[32m"primary-button
+"[39m
+                  [33mstyl
+e[39m=[32m"width: 
+100%;"[39m
+                  [33mtype
+[39m=[32m"submit"[39m
+                [36m>[39m
+                  [0mSave 
+Details[0m
+                
+[36m</button>[39m
+              
+[36m</div>[39m
+              [36m<div 
+/>[39m
+            
+[36m</form>[39m
+          [36m</div>[39m
+        [36m</div>[39m
+      [36m</div>[39m
+    [36m</body>[39m
+
+    [0m [90m 94 |[39m
+     [90m 95 |[39m     
+[90m// Displays the 
+Remaining Amount box: 
+50000 - 10000 - 5000 - 
+2000 = 33000[39m
+    
+[31m[1m>[22m[39m[90m 
+96 |[39m     expect(screen
+[33m.[39mgetByText([32m'
+Γé╣33000'[39m))[33m.[39m
+toBeInTheDocument()[33m;[
+39m
+     [90m    |[39m       
+            
+[31m[1m^[22m[39m
+     [90m 97 |[39m   
+})[33m;[39m
+     [90m 98 |[39m
+     [90m 99 |[39m   
+test([32m'PrintPreview 
+displays correct Reg No 
+and Bill No based on 
+database properties'[39m[
+33m,[39m () [33m=>[39m 
+{[0m
+
+      at 
+Object.getElementError (nod
+e_modules/@testing-library/
+dom/dist/config.js:37:19)
+      at node_modules/@test
+ing-library/dom/dist/query-
+helpers.js:76:38
+      at node_modules/@test
+ing-library/dom/dist/query-
+helpers.js:52:17
+      at getByText (node_mo
+dules/@testing-library/dom/
+dist/query-helpers.js:95:19
+)
+      at 
+Object.<anonymous> (src/com
+ponents/patientCalculation.
+test.js:96:19)
+      at TestScheduler.sche
+duleTests (node_modules/@je
+st/core/build/TestScheduler
+.js:333:13)
+      at runJest (node_modu
+les/@jest/core/build/runJes
+t.js:404:19)
+      at _run10000 (node_mo
+dules/@jest/core/build/cli/
+index.js:320:7)
+      at runCLI (node_modul
+es/@jest/core/build/cli/ind
+ex.js:173:3)
+
+Test Suites: 1 failed, 1 
+total
+Tests:       2 failed, 2 
+passed, 4 total
+Snapshots:   0 total
+Time:        2.219 s
+Ran all test suites 
+matching /patientCalculatio
+n.test.js/i.

@@ -22,27 +22,23 @@ const PatientTable = ({
             <th>Surgeon</th>
             <th>Anaesthetist</th>
             <th>Assistant</th>
-            {userRole === 'admin' && (
-              <>
-                <th>Remaining Balance</th>
-                <th>Total Amount</th>
-                <th>Payment status</th>
-                <th>Payment method</th>
-              </>
-            )}
+            <th>Remaining Balance</th>
+            <th>Total Amount</th>
+            <th>Payment status</th>
+            <th>Payment method</th>
             <th>Actions</th>
           </tr>
         </thead>
         <tbody>
           {patientsLoading && filteredPatients.length === 0 ? (
             <tr>
-              <td colSpan={userRole === 'admin' ? "11" : "9"} className="table-empty-state">
+              <td colSpan="14" className="table-empty-state">
                 Loading patient details...
               </td>
             </tr>
           ) : filteredPatients.length === 0 ? (
             <tr>
-              <td colSpan={userRole === 'admin' ? "11" : "9"} className="table-empty-state">
+              <td colSpan="14" className="table-empty-state">
                 No records found
               </td>
             </tr>
@@ -76,27 +72,23 @@ const PatientTable = ({
                   <td>{patient.surgeon_name || '-'}</td>
                   <td>{patient.anaesthetist_name || '-'}</td>
                   <td>{patient.assistant_name || '-'}</td>
-                  {userRole === 'admin' && (
-                    <>
-                      <td>₹{patient.remaining_amount || 0}</td>
+                  <td>₹{patient.remaining_amount || 0}</td>
 
-                      <td>₹{patient.total_amount || 0}</td>
+                  <td>₹{patient.total_amount || 0}</td>
 
-                      <td>
-                        <span
-                          className={
-                            patient.payment_status === "Fully Paid"
-                              ? "status-badge fully-paid"
-                              : "status-badge due"
-                          }
-                        >
-                          {patient.payment_status || "Due"}
-                        </span>
-                      </td>
+                  <td>
+                    <span
+                      className={
+                        patient.payment_status === "Fully Paid"
+                          ? "status-badge fully-paid"
+                          : "status-badge due"
+                      }
+                    >
+                      {patient.payment_status || "Due"}
+                    </span>
+                  </td>
 
-                      <td>{patient.cash_method || "Not Selected"}</td>
-                    </>
-                  )}
+                  <td>{patient.cash_method || "Not Selected"}</td>
                   <td>
                     <div className="table-actions">
                       <button
