@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from "react";
 import './App.css';
 import { hasSupabaseConfig, supabase } from './lib/supabaseClient';
 
@@ -146,9 +146,9 @@ function App() {
     if (userRole) {
       fetchPatients();
     }
-  }, [session, userRole]);
+  }, [session, userRole,fetchPatients]);
 
-  const fetchPatients = async () => {
+  const fetchPatients = useCallback(async () => {
     setPatientsLoading(true);
     setPatientMessage('');
 
@@ -208,7 +208,7 @@ function App() {
 
     setPatients(mergedPatients);
     setPatientsLoading(false);
-  };
+  }, [userRole, supabase]);
 
   const handleLogin = async (event) => {
     event.preventDefault();
