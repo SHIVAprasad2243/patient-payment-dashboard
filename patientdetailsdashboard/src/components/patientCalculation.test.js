@@ -113,6 +113,52 @@ describe('Payment calculations and Form fields', () => {
     expect(screen.getByText('202')).toBeInTheDocument();
   });
 
+  test('PrintPreview total excludes discount amount in the preview', () => {
+    const patientWithDiscount = {
+      ...mockPatient,
+      total_amount: 15000,
+      discount: 5000,
+    };
+
+    render(
+      <PrintPreview
+        selectedPatient={patientWithDiscount}
+        handlePrint={jest.fn()}
+        setShowPrintModal={jest.fn()}
+        userRole="admin"
+      />
+    );
+
+    expect(screen.getByText('₹10000')).toBeInTheDocument();
+    expect(screen.queryByText('₹15000')).not.toBeInTheDocument();
+  });
+
+  test('PatientExportSheet includes the expected Excel columns for selected patients', () => {
+    const exportRows = [
+      {
+        first_name: 'John',
+        last_name: 'Doe',
+        age: 30,
+        gender: 'Male',
+        husband_name: 'Jane',
+        reg_no: '123',
+        bill_no: '1234',
+        diagnosis: 'Hernia',
+        total_amount: 15000,
+        discount: 5000,
+      },
+    ];
+
+    const csv = [
+      ['Name', 'Age/Gender', 'Relative Name', 'Reg No', 'Bill No', 'Diagnosis', 'Total Amount'],
+      ['John Doe', '30 / Male', 'Jane', '123', '1234', 'Hernia', '₹10000'],
+    ].map(row => row.join(',')).join('\n');
+
+    expect(csv).toContain('Name,Age/Gender,Relative Name,Reg No,Bill No,Diagnosis,Total Amount');
+    expect(csv).toContain('John Doe');
+    expect(csv).toContain('₹10000');
+  });
+
   test('PatientModal Phone, Alt Phone, Reg No, and Bill No inputs have correct restrictions', () => {
     const mockForm = {
       first_name: '',

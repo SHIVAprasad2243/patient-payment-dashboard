@@ -5,6 +5,10 @@ const PrintPreview = ({ selectedPatient, handlePrint, setShowPrintModal }) => {
     selectedPatient.remaining_amount !== undefined && selectedPatient.remaining_amount !== null
       ? selectedPatient.remaining_amount
       : (selectedPatient.remaining_balance || 0);
+  const totalAmount = Math.max(
+    (Number(selectedPatient.total_amount) || 0) - (Number(selectedPatient.discount) || 0),
+    0
+  );
 
   return (
     <div className="modal-overlay print-modal-overlay">
@@ -74,7 +78,7 @@ const PrintPreview = ({ selectedPatient, handlePrint, setShowPrintModal }) => {
                     <div className="print-item"><strong>Advance Payment:</strong> ₹{selectedPatient.advance_payment || 0}</div>
                     <div className="print-item"><strong>Remaining Balance:</strong> ₹{remainingBalance}</div>
                     <div className="print-item"><strong>Discount:</strong> ₹{selectedPatient.discount || 0}</div>
-                    <div className="print-item"><strong>Total Amount:</strong> ₹{selectedPatient.total_amount || 0}</div>
+                    <div className="print-item"><strong>Total Amount:</strong> ₹{totalAmount}</div>
                   </div>
                 </div>
               </div>

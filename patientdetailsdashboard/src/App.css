@@ -761,7 +761,8 @@
 .records-table-container {
   width: 100%;
   display: block;
-  overflow-x: auto;
+  overflow-x: auto; /* allow horizontal scrolling only */
+  overflow-y: visible; /* no vertical scroll */
   border: 1px solid #e2e8f0;
   border-radius: 12px;
   background: white;
@@ -794,6 +795,10 @@
   font-size: 0.9rem;
 }
 
+/* Header/body split: header fixed, body scrolls */
+.records-table-header {
+  display: none;
+}
 .records-table th {
   background: #F8FAFC;
   padding: 12px 16px;
@@ -830,6 +835,48 @@
   padding: 40px !important;
   color: #94a3b8;
   font-style: italic;
+}
+
+.table-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  margin: 16px 0 12px;
+}
+
+.export-sheet-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.export-selected-btn {
+  background: #0f766e;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 18px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.export-selected-btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.export-selected-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.selection-col {
+  width: 44px;
+  text-align: center;
+}
+
+.selection-col input {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
 }
 
 .table-actions {
@@ -1010,6 +1057,25 @@
 .print-date {
   font-size: 0.8rem;
   color: #64748b;
+}
+
+/* Payment status badges */
+.status-badge {
+  display: inline-block;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: #fff;
+  text-transform: none;
+}
+
+.status-badge.fully-paid {
+  background-color: #16a34a; /* green */
+}
+
+.status-badge.due {
+  background-color: #ef4444; /* red */
 }
 
 /* Print Specific Rules */

@@ -7,6 +7,7 @@ import LoginPage from './components/LoginPage';
 import Navbar from './components/Navbar';
 import Sidebar from './components/Sidebar';
 import Dashboard from './components/Dashboard';
+import TransferManagement from './components/TransferManagement';
 
 const emptyPatientForm = {
   first_name: '',
@@ -33,6 +34,7 @@ const emptyPatientForm = {
   surgeon_charge: '',
   anaesthetist_charge: '',
   assistant_charge: '',
+  charge: '',
   balance: '',
   payment_method: '',
   bp: "",
@@ -62,6 +64,8 @@ function App() {
   const [showPatientModal, setShowPatientModal] = useState(false);
   const [showPrintModal, setShowPrintModal] = useState(false);
   const [selectedPatient, setSelectedPatient] = useState(null);
+  const [selectedPatientIds, setSelectedPatientIds] = useState([]);
+  const [activeTab, setActiveTab] = useState('patients');
 
 
 
@@ -150,52 +154,9 @@ function App() {
       return;
     }
 
-    let mergedPatients = patientData || [];
-
-    if (userRole === 'admin') {
-      const paymentTable = 'adminPatientPaymentDetailsTable';
-
-      const { data: paymentData, error: paymentError } = await supabase
-        .from(paymentTable)
-        .select('*');
-
-      if (!paymentError && paymentData) {
-        mergedPatients = mergedPatients.map(patient => {
-          const pmt = paymentData.find(p => p.patient_id === patient.id) || {
-            package_amount: 0,
-            advance_payment: 0,
-            discount: 0,
-            balance: 0,
-            remaining_balance: 0,
-            remaining_amount: 0,
-            total_amount: 0,
-            cash_method: '',
-            payment_status: 'Due'
-          };
-
-          const paymentFields = {
-            package_amount: pmt.package_amount || 0,
-            advance_payment: pmt.advance_payment || 0,
-            discount: pmt.discount || 0,
-            balance: pmt.balance || 0,
-            total_amount: pmt.total_amount || 0,
-            cash_method: pmt.cash_method || '',
-            payment_status: pmt.payment_status || 'Due',
-            patient_id: pmt.patient_id || patient.id,
-          };
-
-          return { 
-            ...patient, 
-            ...paymentFields,
-            remaining_amount: pmt.remaining_balance !== undefined ? pmt.remaining_balance : (pmt.remaining_amount || 0)
-          };
-        });
-      }
-    }
-
-    setPatients(mergedPatients);
+    setPatients(patientData || []);
     setPatientsLoading(false);
-  }, [userRole]);
+  }, []);
 
   useEffect(() => {
     if (!session) {
@@ -362,9 +323,7 @@ function App() {
       age: patientForm.age ? Number(patientForm.age) : null,
       // total_amount: totalAmount,
       // cash_method: patientForm.cash_method,
-      surgeon_charge: Number(patientForm.surgeon_charge) || 0,
-      anaesthetist_charge: Number(patientForm.anaesthetist_charge) || 0,
-      assistant_charge: Number(patientForm.assistant_charge) || 0,
+      // Professional charges are applied conditionally below based on role
       bp: patientForm.bp || '',
       pr: patientForm.pr || '',
       rr: patientForm.rr || '',
@@ -374,58 +333,52 @@ function App() {
       lungs: patientForm.lungs || '',
     };
 
-    if (userRole !== 'admin') {
+    Object.assign(patientPayload, {
+      package_amount: Number(patientForm.package_amount) || 0,
+      advance_payment: Number(patientForm.advance_payment) || 0,
+      discount: Number(patientForm.discount) || 0,
+      balance: Number(patientForm.balance) || 0,
+      remaining_amount: remaining_amount,
+      total_amount: totalAmount,
+      cash_method: patientForm.cash_method,
+      payment_status: paymentStatus,
+    });
+
+    // Ensure only admins can set or update professional charges.
+    if (editingPatientId) {
+      if (userRole === 'admin') {
+        Object.assign(patientPayload, {
+          surgeon_charge: Number(patientForm.surgeon_charge) || 0,
+          anaesthetist_charge: Number(patientForm.anaesthetist_charge) || 0,
+          assistant_charge: Number(patientForm.assistant_charge) || 0,
+          charge: Number(patientForm.charge) || 0,
+        });
+      }
+    } else {
+      // For new records, only admins can set non-zero charges. Non-admins get 0.
       Object.assign(patientPayload, {
-        package_amount: Number(patientForm.package_amount) || 0,
-        advance_payment: Number(patientForm.advance_payment) || 0,
-        discount: Number(patientForm.discount) || 0,
-        balance: Number(patientForm.balance) || 0,
-        remaining_amount: remaining_amount,
-        total_amount: totalAmount,
-        cash_method: patientForm.cash_method,
-        payment_status: paymentStatus,
+        surgeon_charge: userRole === 'admin' ? Number(patientForm.surgeon_charge) || 0 : 0,
+        anaesthetist_charge: userRole === 'admin' ? Number(patientForm.anaesthetist_charge) || 0 : 0,
+        assistant_charge: userRole === 'admin' ? Number(patientForm.assistant_charge) || 0 : 0,
+        charge: userRole === 'admin' ? Number(patientForm.charge) || 0 : 0,
       });
     }
 
     const request = editingPatientId
       ? supabase
-        .from('patientDetailsTable')
-        .update(patientPayload)
-        .eq('id', editingPatientId)
+          .from('patientDetailsTable')
+          .update(patientPayload)
+          .eq('id', editingPatientId)
       : supabase.from('patientDetailsTable').insert(patientPayload).select().single();
 
-    const { data: savedData, error } = await request;
+    const { error } = await request;
 
     if (error) {
       setPatientMessage(error.message);
       setPatientsLoading(false);
       return;
     }
-    const savedPatientId = editingPatientId || (savedData && savedData.id);
 
-    if (savedPatientId && userRole === "admin") {
-      const paymentTable = "adminPatientPaymentDetailsTable";
-
-      const paymentPayload = {
-        patient_id: savedPatientId,
-        package_amount: Number(patientForm.package_amount) || 0,
-        advance_payment: Number(patientForm.advance_payment) || 0,
-        balance: Number(patientForm.balance) || 0,
-        discount: Number(patientForm.discount) || 0,
-        remaining_balance: remaining_amount,
-        total_amount: totalAmount,
-        cash_method: patientForm.cash_method,
-        payment_status: paymentStatus,
-      };
-
-      const { error: paymentUpsertError } = await supabase
-        .from(paymentTable)
-        .upsert(paymentPayload, { onConflict: 'patient_id' });
-
-      if (paymentUpsertError) {
-        console.error(paymentUpsertError);
-      }
-    }
     resetPatientForm();
     setShowPatientModal(false);
     await fetchPatients();
@@ -462,6 +415,7 @@ function App() {
       surgeon_charge: patient.surgeon_charge || '',
       anaesthetist_charge: patient.anaesthetist_charge || '',
       assistant_charge: patient.assistant_charge || '',
+      charge: patient.charge || '',
       bp: patient.bp || '',
       pr: patient.pr || '',
       rr: patient.rr || '',
@@ -555,6 +509,30 @@ function App() {
     p.surgeon_name?.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  const selectedPatients = patients.filter((patient) =>
+    selectedPatientIds.includes(patient.id)
+  );
+
+  const handlePatientSelectionToggle = (patientId) => {
+    setSelectedPatientIds((prev) =>
+      prev.includes(patientId)
+        ? prev.filter((id) => id !== patientId)
+        : [...prev, patientId]
+    );
+  };
+
+  const handleSelectAllPatients = () => {
+    const visibleIds = filteredPatients.map((patient) => patient.id);
+    const allVisibleSelected = visibleIds.length > 0 && visibleIds.every((id) => selectedPatientIds.includes(id));
+
+    if (allVisibleSelected) {
+      setSelectedPatientIds((prev) => prev.filter((id) => !visibleIds.includes(id)));
+      return;
+    }
+
+    setSelectedPatientIds((prev) => [...new Set([...prev, ...visibleIds])]);
+  };
+
   return (
     <main className="app-shell" onClick={() => showProfileMenu && setShowProfileMenu(false)}>
       <Navbar
@@ -567,35 +545,45 @@ function App() {
       />
 
       <div className="dashboard-layout">
-        <Sidebar />
+        <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} />
 
-        <Dashboard
-          searchQuery={searchQuery}
-          setSearchQuery={setSearchQuery}
-          resetPatientForm={resetPatientForm}
-          setShowPatientModal={setShowPatientModal}
-          totalPatients={totalPatients}
-          monthlyPatients={monthlyPatients}
-          patientsLoading={patientsLoading}
-          filteredPatients={filteredPatients}
-          userRole={userRole}
-          handlePrintClick={handlePrintClick}
-          handleEditPatient={handleEditPatient}
-          handleDeletePatient={handleDeletePatient}
-          showPatientModal={showPatientModal}
-          editingPatientId={editingPatientId}
-          patientForm={patientForm}
-          handlePatientChange={handlePatientChange}
-          handleImageChange={handleImageChange}
-          handlePatientSubmit={handlePatientSubmit}
-          patientMessage={patientMessage}
-          masterDiagnoses={masterDiagnoses}
-          masterStaff={masterStaff}
-          showPrintModal={showPrintModal}
-          selectedPatient={selectedPatient}
-          handlePrint={handlePrint}
-          setShowPrintModal={setShowPrintModal}
-        />
+        {activeTab === 'transfer' ? (
+          <section className="dashboard-page">
+            <TransferManagement userRole={userRole} />
+          </section>
+        ) : (
+          <Dashboard
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+            resetPatientForm={resetPatientForm}
+            setShowPatientModal={setShowPatientModal}
+            totalPatients={totalPatients}
+            monthlyPatients={monthlyPatients}
+            patientsLoading={patientsLoading}
+            filteredPatients={filteredPatients}
+            userRole={userRole}
+            handlePrintClick={handlePrintClick}
+            handleEditPatient={handleEditPatient}
+            handleDeletePatient={handleDeletePatient}
+            showPatientModal={showPatientModal}
+            editingPatientId={editingPatientId}
+            patientForm={patientForm}
+            handlePatientChange={handlePatientChange}
+            handleImageChange={handleImageChange}
+            handlePatientSubmit={handlePatientSubmit}
+            patientMessage={patientMessage}
+            masterDiagnoses={masterDiagnoses}
+            masterStaff={masterStaff}
+            showPrintModal={showPrintModal}
+            selectedPatient={selectedPatient}
+            handlePrint={handlePrint}
+            setShowPrintModal={setShowPrintModal}
+            selectedPatientIds={selectedPatientIds}
+            handlePatientSelectionToggle={handlePatientSelectionToggle}
+            handleSelectAllPatients={handleSelectAllPatients}
+            selectedPatients={selectedPatients}
+          />
+        )}
       </div>
     </main>
   );

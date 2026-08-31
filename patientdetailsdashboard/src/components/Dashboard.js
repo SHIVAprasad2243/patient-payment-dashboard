@@ -3,6 +3,7 @@ import StatsCards from './StatsCards';
 import PatientTable from './PatientTable';
 import PatientModal from './PatientModal';
 import PrintPreview from './PrintPreview';
+import PatientExportSheet from './PatientExportSheet';
 
 const Dashboard = ({
   searchQuery,
@@ -29,7 +30,11 @@ const Dashboard = ({
   showPrintModal,
   selectedPatient,
   handlePrint,
-  setShowPrintModal
+  setShowPrintModal,
+  selectedPatientIds,
+  handlePatientSelectionToggle,
+  handleSelectAllPatients,
+  selectedPatients,
 }) => {
   return (
     <section className="dashboard-page">
@@ -66,6 +71,13 @@ const Dashboard = ({
         monthlyPatients={monthlyPatients}
       />
 
+      <div className="table-toolbar">
+        <PatientExportSheet
+          selectedPatients={selectedPatients}
+          disabled={selectedPatients.length === 0}
+        />
+      </div>
+
       <PatientTable 
         patientsLoading={patientsLoading}
         filteredPatients={filteredPatients}
@@ -73,6 +85,9 @@ const Dashboard = ({
         handlePrintClick={handlePrintClick}
         handleEditPatient={handleEditPatient}
         handleDeletePatient={handleDeletePatient}
+        selectedPatientIds={selectedPatientIds}
+        handlePatientSelectionToggle={handlePatientSelectionToggle}
+        handleSelectAllPatients={handleSelectAllPatients}
       />
 
       {showPatientModal && (

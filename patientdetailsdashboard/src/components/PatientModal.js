@@ -200,7 +200,7 @@ const PatientModal = ({
                   placeholder="Select or type diagnosis..."
                 />
                 <datalist id="diagnosis-list">
-                  {masterDiagnoses.map((d, i) => (
+                  {(masterDiagnoses || []).map((d, i) => (
                     <option key={i} value={d} />
                   ))}
                 </datalist>
@@ -216,7 +216,7 @@ const PatientModal = ({
                   placeholder="Surgeon Name"
                 />
                 <datalist id="surgeon-list">
-                  {masterStaff.surgeons.map((s, i) => (
+                  {(masterStaff?.surgeons || []).map((s, i) => (
                     <option key={i} value={s} />
                   ))}
                 </datalist>
@@ -234,7 +234,7 @@ const PatientModal = ({
                   placeholder="Anaesthetist Name"
                 />
                 <datalist id="anaesthetist-list">
-                  {masterStaff.anaesthetists.map((a, i) => (
+                  {(masterStaff?.anaesthetists || []).map((a, i) => (
                     <option key={i} value={a} />
                   ))}
                 </datalist>
@@ -250,7 +250,7 @@ const PatientModal = ({
                   placeholder="Assistant Name"
                 />
                 <datalist id="assistant-list">
-                  {masterStaff.assistants.map((ast, i) => (
+                  {(masterStaff?.assistants || []).map((ast, i) => (
                     <option key={i} value={ast} />
                   ))}
                 </datalist>
@@ -402,6 +402,22 @@ const PatientModal = ({
 
                 </div>
 
+                {/* Charge field (admin only) */}
+                {userRole === 'admin' && (
+                  <div className="form-row">
+                    <div>
+                      <label>Charge (₹)</label>
+                      <input
+                        name="charge"
+                        type="number"
+                        value={patientForm.charge}
+                        onChange={handlePatientChange}
+                        placeholder="0"
+                      />
+                    </div>
+                  </div>
+                )}
+
                 {/* Advance Payment and Discount */}
                 <div className="form-row">
                   <div>
@@ -502,43 +518,47 @@ const PatientModal = ({
                 </div>
               </div>
 
-              <div className="form-section">
-                <h3 className="section-title">Professional Charges</h3>
-                <div className="form-row">
-                  <div>
-                    <label>Surgeon Charge (₹)</label>
-                    <input
-                      name="surgeon_charge"
-                      type="number"
-                      value={patientForm.surgeon_charge}
-                      onChange={handlePatientChange}
-                      placeholder="0"
-                    />
+               
+               {userRole === 'admin' && (
+                <div className="form-section">
+                  <h3 className="section-title">Professional Charges</h3>
+                  <div className="form-row">
+                    <div>
+                      <label>Surgeon Charge (₹)</label>
+                      <input
+                        name="surgeon_charge"
+                        type="number"
+                        value={patientForm.surgeon_charge}
+                        onChange={handlePatientChange}
+                        placeholder="0"
+                      />
+                    </div>
+                    <div>
+                      <label>Anaesthetist Charge (₹)</label>
+                      <input
+                        name="anaesthetist_charge"
+                        type="number"
+                        value={patientForm.anaesthetist_charge}
+                        onChange={handlePatientChange}
+                        placeholder="0"
+                      />
+                    </div>
                   </div>
-                  <div>
-                    <label>Anaesthetist Charge (₹)</label>
-                    <input
-                      name="anaesthetist_charge"
-                      type="number"
-                      value={patientForm.anaesthetist_charge}
-                      onChange={handlePatientChange}
-                      placeholder="0"
-                    />
+                  <div className="form-row">
+                    <div>
+                      <label>Assistant Charge (₹)</label>
+                      <input
+                        name="assistant_charge"
+                        type="number"
+                        value={patientForm.assistant_charge}
+                        onChange={handlePatientChange}
+                        placeholder="0"
+                      />
+                    </div>
                   </div>
                 </div>
-                <div className="form-row">
-                  <div>
-                    <label>Assistant Charge (₹)</label>
-                    <input
-                      name="assistant_charge"
-                      type="number"
-                      value={patientForm.assistant_charge}
-                      onChange={handlePatientChange}
-                      placeholder="0"
-                    />
-                  </div>
-                </div>
-              </div>
+              )}
+              
 
           {patientMessage && (
             <p className="status-message">{patientMessage}</p>
