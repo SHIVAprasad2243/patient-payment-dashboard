@@ -64,10 +64,6 @@ const PatientTable = ({
             </tr>
           ) : (
             filteredPatients.map((patient) => {
-              const totalCharge =
-                Number(patient.surgeon_charge || 0) +
-                Number(patient.anaesthetist_charge || 0) +
-                Number(patient.assistant_charge || 0);
 
               return (
                 <tr key={patient.id}>
