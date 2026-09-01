@@ -1,4 +1,4 @@
-import React from 'react';
+import React,{useEffect} from 'react';
 import StatsCards from './StatsCards';
 import PatientTable from './PatientTable';
 import PatientModal from './PatientModal';
@@ -36,6 +36,13 @@ const Dashboard = ({
   handleSelectAllPatients,
   selectedPatients,
 }) => {
+
+  useEffect(() => {
+    // Reset search query when the component mounts
+    console.log("patientForm",patientForm);
+    
+  },[]);
+
   return (
     <section className="dashboard-page">
       <header className="dashboard-header-simple">
@@ -60,7 +67,7 @@ const Dashboard = ({
                 setShowPatientModal(true);
               }}
             >
-              Add Patient Details
+              Add Patient
             </button>
           </div>
         </div>
@@ -74,6 +81,8 @@ const Dashboard = ({
       <div className="table-toolbar">
         <PatientExportSheet
           selectedPatients={selectedPatients}
+          allPatients={filteredPatients}
+          userRole={userRole}
           disabled={selectedPatients.length === 0}
         />
       </div>

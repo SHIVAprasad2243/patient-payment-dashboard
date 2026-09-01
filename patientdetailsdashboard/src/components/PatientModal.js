@@ -555,6 +555,28 @@ const PatientModal = ({
                         placeholder="0"
                       />
                     </div>
+                    <div>
+                      <label>Staff Charge (₹)</label>
+                      <input
+                        name="staff_charges"
+                        type="number"
+                        value={patientForm.staff_charges}
+                        onChange={handlePatientChange}
+                        placeholder="0"
+                      />
+                    </div>
+                  </div>
+                  <div className="form-row">
+                    <div>
+                      <label>Ayyas Charge (₹)</label>
+                      <input
+                        name="ayyas_charges"
+                        type="number"
+                        value={patientForm.ayyas_charges}
+                        onChange={handlePatientChange}
+                        placeholder="0"
+                      />
+                    </div>
                   </div>
                 </div>
               )}

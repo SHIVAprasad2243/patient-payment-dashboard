@@ -399,6 +399,48 @@
   background: #fef2f2;
 }
 
+/* Export buttons styling */
+.export-sheet-actions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.export-selected-btn,
+.export-selected-patient-details-btn {
+  background: #2b8a78;
+  color: #fff;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.08s ease, box-shadow 0.12s ease;
+}
+
+.export-selected-btn:hover,
+.export-selected-patient-details-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(43, 138, 120, 0.18);
+}
+
+.export-selected-btn:disabled,
+.export-selected-patient-details-btn:disabled {
+  background: #e6e6e6;
+  color: #9aa0a0;
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
+}
+
+.export-selected-patient-details-btn {
+  background: #4065f5;
+}
+
+.export-selected-patient-details-btn:disabled {
+  background: #e6e6e6;
+}
+
 .dashboard-layout {
   display: flex;
   flex: 1;

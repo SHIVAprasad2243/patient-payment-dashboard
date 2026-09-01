@@ -34,6 +34,8 @@ const emptyPatientForm = {
   surgeon_charge: '',
   anaesthetist_charge: '',
   assistant_charge: '',
+  staff_charges: '',
+  ayyas_charges: '',
   charge: '',
   balance: '',
   payment_method: '',
@@ -118,6 +120,11 @@ function App() {
 
     return () => subscription.unsubscribe();
   }, []);
+
+
+  useEffect(()=>{
+console.log("patientForm12",patientForm)
+  },[])
 
   const fetchUserRole = async (userId) => {
     try {
@@ -351,6 +358,8 @@ function App() {
           surgeon_charge: Number(patientForm.surgeon_charge) || 0,
           anaesthetist_charge: Number(patientForm.anaesthetist_charge) || 0,
           assistant_charge: Number(patientForm.assistant_charge) || 0,
+          staff_charges: Number(patientForm.staff_charges) || 0,
+          ayyas_charges: Number(patientForm.ayyas_charges) || 0,
           charge: Number(patientForm.charge) || 0,
         });
       }
@@ -360,7 +369,9 @@ function App() {
         surgeon_charge: userRole === 'admin' ? Number(patientForm.surgeon_charge) || 0 : 0,
         anaesthetist_charge: userRole === 'admin' ? Number(patientForm.anaesthetist_charge) || 0 : 0,
         assistant_charge: userRole === 'admin' ? Number(patientForm.assistant_charge) || 0 : 0,
-        charge: userRole === 'admin' ? Number(patientForm.charge) || 0 : 0,
+          staff_charges: userRole === 'admin' ? Number(patientForm.staff_charges) || 0 : 0,
+          ayyas_charges: userRole === 'admin' ? Number(patientForm.ayyas_charges) || 0 : 0,
+          charge: userRole === 'admin' ? Number(patientForm.charge) || 0 : 0,
       });
     }
 
@@ -370,6 +381,9 @@ function App() {
           .update(patientPayload)
           .eq('id', editingPatientId)
       : supabase.from('patientDetailsTable').insert(patientPayload).select().single();
+
+    // Debug: log payload sent to Supabase for verification
+    console.log('Submitting patientPayload:', patientPayload);
 
     const { error } = await request;
 
@@ -381,6 +395,8 @@ function App() {
 
     resetPatientForm();
     setShowPatientModal(false);
+    // Brief success message to help verification
+    setPatientMessage('Patient details saved');
     await fetchPatients();
   };
 
@@ -415,7 +431,9 @@ function App() {
       surgeon_charge: patient.surgeon_charge || '',
       anaesthetist_charge: patient.anaesthetist_charge || '',
       assistant_charge: patient.assistant_charge || '',
-      charge: patient.charge || '',
+        staff_charges: patient.staff_charges || '',
+        ayyas_charges: patient.ayyas_charges || '',
+        charge: patient.charge || '',
       bp: patient.bp || '',
       pr: patient.pr || '',
       rr: patient.rr || '',
