@@ -122,9 +122,6 @@ function App() {
   }, []);
 
 
-  useEffect(()=>{
-console.log("patientForm12",patientForm)
-  },[])
 
   const fetchUserRole = async (userId) => {
     try {

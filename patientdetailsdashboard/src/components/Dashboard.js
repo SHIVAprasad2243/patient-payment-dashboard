@@ -1,4 +1,4 @@
-import React,{useEffect} from 'react';
+import React from 'react';
 import StatsCards from './StatsCards';
 import PatientTable from './PatientTable';
 import PatientModal from './PatientModal';
@@ -36,12 +36,6 @@ const Dashboard = ({
   handleSelectAllPatients,
   selectedPatients,
 }) => {
-
-  useEffect(() => {
-    // Reset search query when the component mounts
-    console.log("patientForm",patientForm);
-    
-  },[]);
 
   return (
     <section className="dashboard-page">

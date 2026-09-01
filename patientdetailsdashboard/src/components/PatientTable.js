@@ -1,4 +1,4 @@
-import React,{useEffect} from 'react';
+import React from 'react';
 
 const PatientTable = ({
   patientsLoading,
@@ -13,11 +13,7 @@ const PatientTable = ({
 }) => {
     const columnCount = userRole === 'admin' ? 16 : 15; // header columns depend on role
 
-    useEffect(() => {
-        // Reset search query when the component mounts
-console.log("filteredPatients",filteredPatients);
-    },[]);
-  
+    
 
   return (
 
