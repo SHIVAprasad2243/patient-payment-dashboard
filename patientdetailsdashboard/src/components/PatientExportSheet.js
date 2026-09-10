@@ -13,16 +13,17 @@ const PatientExportSheet = ({ selectedPatients, allPatients = [], disabled = tru
       ['S No', 'Date', 'Name', 'Diagnosis', 'Amount (₹)', 'Charges (₹)', 'Total Amount (₹)'],
 
       ...selectedPatients.map((patient, idx) => {
-        const amount = Number(patient.total_amount) || 0; // how much paid (total amount field)
+        const packageAmount = Number(patient.total_amount) || 0;
+        const discount = Number(patient.discount) || 0;
+        const amount = Math.max(packageAmount - discount, 0); // total package minus discount
 
         const surgeon = Number(patient.surgeon_charge) || 0;
         const ana = Number(patient.anaesthetist_charge) || 0;
         const assist = Number(patient.assistant_charge) || 0;
         const staff = Number(patient.staff_charges) || 0;
         const ayyas = Number(patient.ayyas_charges) || 0;
-        const miscCharge = Number(patient.charge) || 0;
 
-        const chargesSum = surgeon + ana + assist + staff + ayyas + miscCharge;
+        const chargesSum = surgeon + ana + assist + staff + ayyas;
 
         const totalAfterCharges = amount - chargesSum;
 

@@ -48,6 +48,53 @@ const emptyPatientForm = {
   lungs: "",
 };
 
+export const sortPatientsByAdmissionDate = (patients = []) => {
+  return [...patients].sort((a, b) => {
+    const aValue = a?.date_of_admission;
+    const bValue = b?.date_of_admission;
+
+    const aTime = parseAdmissionDate(aValue);
+    const bTime = parseAdmissionDate(bValue);
+
+    if (aTime && bTime) {
+      return bTime - aTime;
+    }
+
+    if (aTime && !bTime) return -1;
+    if (!aTime && bTime) return 1;
+
+    return (b?.id ?? 0) - (a?.id ?? 0);
+  });
+};
+
+const parseAdmissionDate = (value) => {
+  if (!value) return null;
+
+  const trimmed = String(value).trim();
+  if (!trimmed) return null;
+
+  const candidates = [
+    trimmed,
+    trimmed.replace(/\//g, '-'),
+    trimmed.split('/').reverse().join('-'),
+  ];
+
+  for (const candidate of candidates) {
+    const date = new Date(candidate);
+    if (!Number.isNaN(date.getTime())) {
+      return date.getTime();
+    }
+  }
+
+  if (/^\d{4}-\d{2}-\d{2}$/.test(trimmed)) {
+    const [year, month, day] = trimmed.split('-').map(Number);
+    const date = new Date(year, month - 1, day);
+    if (!Number.isNaN(date.getTime())) return date.getTime();
+  }
+
+  return null;
+};
+
 function App() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -62,7 +109,10 @@ function App() {
   const [patientForm, setPatientForm] = useState(emptyPatientForm);
   const [editingPatientId, setEditingPatientId] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
   const [showProfileMenu, setShowProfileMenu] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [showPatientModal, setShowPatientModal] = useState(false);
   const [showPrintModal, setShowPrintModal] = useState(false);
   const [selectedPatient, setSelectedPatient] = useState(null);
@@ -149,8 +199,7 @@ function App() {
 
     const { data: patientData, error: patientError } = await supabase
       .from('patientDetailsTable')
-      .select('*')
-      .order('id', { ascending: false });
+      .select('*');
 
     if (patientError) {
       setPatientMessage(patientError.message);
@@ -158,7 +207,7 @@ function App() {
       return;
     }
 
-    setPatients(patientData || []);
+    setPatients(sortPatientsByAdmissionDate(patientData || []));
     setPatientsLoading(false);
   }, []);
 
@@ -516,13 +565,37 @@ function App() {
     );
   }).length;
 
-  const filteredPatients = patients.filter((p) =>
-    p.first_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    p.last_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    p.phone?.includes(searchQuery) ||
-    p.diagnosis?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    p.surgeon_name?.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredPatients = sortPatientsByAdmissionDate(patients).filter((p) => {
+    const matchesSearch =
+      p.first_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      p.last_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      p.phone?.includes(searchQuery) ||
+      p.diagnosis?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      p.surgeon_name?.toLowerCase().includes(searchQuery.toLowerCase());
+
+    if (!matchesSearch) {
+      return false;
+    }
+
+    const patientDate = parseAdmissionDate(p.date_of_admission);
+    if (!patientDate) {
+      return !startDate && !endDate;
+    }
+
+    const patientDateOnly = new Date(patientDate);
+    const startFilter = startDate ? new Date(startDate) : null;
+    const endFilter = endDate ? new Date(endDate) : null;
+
+    if (startFilter && patientDateOnly < startFilter) {
+      return false;
+    }
+
+    if (endFilter && patientDateOnly > endFilter) {
+      return false;
+    }
+
+    return true;
+  });
 
   const selectedPatients = patients.filter((patient) =>
     selectedPatientIds.includes(patient.id)
@@ -559,8 +632,13 @@ function App() {
         loading={loading}
       />
 
-      <div className="dashboard-layout">
-        <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} />
+      <div className={`dashboard-layout ${sidebarCollapsed ? 'sidebar-collapsed' : ''}`}>
+        <Sidebar
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
+          collapsed={sidebarCollapsed}
+          setCollapsed={setSidebarCollapsed}
+        />
 
         {activeTab === 'transfer' ? (
           <section className="dashboard-page">
@@ -570,6 +648,10 @@ function App() {
           <Dashboard
             searchQuery={searchQuery}
             setSearchQuery={setSearchQuery}
+            startDate={startDate}
+            setStartDate={setStartDate}
+            endDate={endDate}
+            setEndDate={setEndDate}
             resetPatientForm={resetPatientForm}
             setShowPatientModal={setShowPatientModal}
             totalPatients={totalPatients}

@@ -8,6 +8,10 @@ import PatientExportSheet from './PatientExportSheet';
 const Dashboard = ({
   searchQuery,
   setSearchQuery,
+  startDate,
+  setStartDate,
+  endDate,
+  setEndDate,
   resetPatientForm,
   setShowPatientModal,
   totalPatients,
@@ -42,27 +46,52 @@ const Dashboard = ({
       <header className="dashboard-header-simple">
         <div className="header-top">
           <div className="header-title">
-            <h1>Registered Patients</h1>
+            <h2>Registered Patients</h2>
+            <p>Manage and review all admitted patient records</p>
           </div>
-          <div className="header-controls">
-            <div className="search-wrapper">
+
+          <button
+            className="add-patient-btn"
+            onClick={() => {
+              resetPatientForm();
+              setShowPatientModal(true);
+            }}
+          >
+            <span className="add-patient-icon">+</span>
+            Add Patient
+          </button>
+        </div>
+
+        <div className="filter-toolbar-row">
+          <div className="search-wrapper">
+            <input
+              type="text"
+              placeholder="Search by name, diagnosis or phone..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="search-input"
+            />
+          </div>
+
+          <div className="date-filter-group">
+            <label>
+              <span>Start</span>
               <input
-                type="text"
-                placeholder="Search by name, diagnosis or phone..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="search-input"
+                type="date"
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+                className="date-input"
               />
-            </div>
-            <button
-              className="add-patient-btn"
-              onClick={() => {
-                resetPatientForm();
-                setShowPatientModal(true);
-              }}
-            >
-              Add Patient
-            </button>
+            </label>
+            <label>
+              <span>End</span>
+              <input
+                type="date"
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+                className="date-input"
+              />
+            </label>
           </div>
         </div>
       </header>

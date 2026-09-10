@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import App from './App';
+import App, { sortPatientsByAdmissionDate } from './App';
 import PatientModal from './components/PatientModal';
 import PatientTable from './components/PatientTable';
 
@@ -90,6 +90,7 @@ test('shows charge column and total in admin patient table', () => {
           surgeon_charge: 300,
           anaesthetist_charge: 200,
           assistant_charge: 100,
+          charge: 600,
         }
       ]}
       userRole="admin"
@@ -104,4 +105,15 @@ test('shows charge column and total in admin patient table', () => {
 
   expect(screen.getByText(/charge/i)).toBeInTheDocument();
   expect(screen.getByText('₹600')).toBeInTheDocument();
+});
+
+test('sorts patients by admission date in descending order', () => {
+  const patients = [
+    { id: 1, date_of_admission: '2026-08-10' },
+    { id: 2, date_of_admission: '2026-09-09' },
+    { id: 3, date_of_admission: '2026-08-31' },
+    { id: 4, date_of_admission: '' },
+  ];
+
+  expect(sortPatientsByAdmissionDate(patients).map((patient) => patient.id)).toEqual([2, 3, 1, 4]);
 });
