@@ -71,7 +71,11 @@ const PatientModal = ({
                   onChange={handlePatientChange}
                   placeholder="First name"
                   required
+                  aria-invalid={!!fieldErrors.first_name}
                 />
+                {fieldErrors.first_name && (
+                  <div className="field-error-text">{fieldErrors.first_name}</div>
+                )}
               </div>
               <div>
                 <label>Last name</label>
@@ -81,7 +85,11 @@ const PatientModal = ({
                   value={patientForm.last_name}
                   onChange={handlePatientChange}
                   placeholder="Last name"
+                  aria-invalid={!!fieldErrors.last_name}
                 />
+                {fieldErrors.last_name && (
+                  <div className="field-error-text">{fieldErrors.last_name}</div>
+                )}
               </div>
             </div>
             <div className="form-row">
@@ -102,12 +110,16 @@ const PatientModal = ({
                   value={patientForm.gender}
                   onChange={handlePatientChange}
                   required
+                  aria-invalid={!!fieldErrors.gender}
                 >
                   <option value="">Select Gender</option>
                   <option value="Male">Male</option>
                   <option value="Female">Female</option>
                   <option value="Other">Other</option>
                 </select>
+                {fieldErrors.gender && (
+                  <div className="field-error-text">{fieldErrors.gender}</div>
+                )}
               </div>
             </div>
             <div className="form-row">
@@ -123,7 +135,11 @@ const PatientModal = ({
                   minLength={14}
                   maxLength={14}
                   required
+                  aria-invalid={!!fieldErrors.cell_no}
                 />
+                {fieldErrors.cell_no && (
+                  <div className="field-error-text">{fieldErrors.cell_no}</div>
+                )}
               </div>
               <div>
                 <label>Relative Name</label>
@@ -157,7 +173,11 @@ const PatientModal = ({
                   type="date"
                   value={patientForm.date_of_admission}
                   onChange={handlePatientChange}
+                  aria-invalid={!!fieldErrors.date_of_admission}
                 />
+                {fieldErrors.date_of_admission && (
+                  <div className="field-error-text">{fieldErrors.date_of_admission}</div>
+                )}
               </div>
             </div>
             <div className="form-row">

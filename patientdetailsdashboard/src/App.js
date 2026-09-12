@@ -107,7 +107,15 @@ function App() {
   const [patients, setPatients] = useState([]);
   const [patientsLoading, setPatientsLoading] = useState(false);
   const [patientMessage, setPatientMessage] = useState('');
-  const [fieldErrors, setFieldErrors] = useState({ reg_no: '', bill_no: '' });
+  const [fieldErrors, setFieldErrors] = useState({
+    first_name: '',
+    last_name: '',
+    gender: '',
+    cell_no: '',
+    date_of_admission: '',
+    reg_no: '',
+    bill_no: '',
+  });
   const [patientForm, setPatientForm] = useState(emptyPatientForm);
   const [editingPatientId, setEditingPatientId] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
@@ -120,6 +128,7 @@ function App() {
   const [selectedPatient, setSelectedPatient] = useState(null);
   const [selectedPatientIds, setSelectedPatientIds] = useState([]);
   const [activeTab, setActiveTab] = useState('patients');
+  const [pendingDeletePatient, setPendingDeletePatient] = useState(null);
 
 
 
@@ -273,8 +282,10 @@ function App() {
   const canSavePatient = (() => {
     const requiredFields = [
       patientForm.first_name,
+      patientForm.last_name,
       patientForm.gender,
       patientForm.cell_no,
+      patientForm.date_of_admission,
       patientForm.bill_no,
     ];
 
@@ -302,7 +313,7 @@ function App() {
       return;
     }
 
-    if (['reg_no', 'bill_no'].includes(name)) {
+    if (Object.keys(fieldErrors).includes(name)) {
       setFieldErrors((currentErrors) => ({
         ...currentErrors,
         [name]: '',
@@ -353,7 +364,15 @@ function App() {
     setPatientForm(emptyPatientForm);
     setEditingPatientId(null);
     setPatientMessage('');
-    setFieldErrors({ reg_no: '', bill_no: '' });
+    setFieldErrors({
+      first_name: '',
+      last_name: '',
+      gender: '',
+      cell_no: '',
+      date_of_admission: '',
+      reg_no: '',
+      bill_no: '',
+    });
   };
 
   const handleImageChange = (e) => {
@@ -376,33 +395,49 @@ function App() {
     setPatientMessage('');
     setPatientsLoading(true);
 
-    const nextFieldErrors = { reg_no: '', bill_no: '' };
+    const nextFieldErrors = {
+      first_name: '',
+      last_name: '',
+      gender: '',
+      cell_no: '',
+      date_of_admission: '',
+      reg_no: '',
+      bill_no: '',
+    };
 
-    if (patientForm.operation_type === 'A') {
-      if (patientForm.reg_no) {
-        const regExists = patients.some((patient) =>
-          String(patient.reg_no ?? '').trim() === String(patientForm.reg_no).trim() &&
-          patient.id !== editingPatientId
-        );
-        if (regExists) {
-          nextFieldErrors.reg_no = 'IP Number already exists.';
-        }
+    if (!patientForm.first_name?.trim()) nextFieldErrors.first_name = 'First name is required.';
+    if (!patientForm.last_name?.trim()) nextFieldErrors.last_name = 'Last name is required.';
+    if (!patientForm.gender) nextFieldErrors.gender = 'Gender is required.';
+    if (!patientForm.cell_no?.trim()) nextFieldErrors.cell_no = 'Phone number is required.';
+    if (!patientForm.date_of_admission) nextFieldErrors.date_of_admission = 'Date of admission is required.';
+    if (!patientForm.bill_no?.trim()) nextFieldErrors.bill_no = 'Bill No is required.';
+    if (patientForm.operation_type !== 'B' && !patientForm.reg_no?.trim()) {
+      nextFieldErrors.reg_no = 'IP Number is required.';
+    }
+
+    if (patientForm.operation_type === 'A' && patientForm.reg_no) {
+      const regExists = patients.some((patient) =>
+        String(patient.reg_no ?? '').trim() === String(patientForm.reg_no).trim() &&
+        patient.id !== editingPatientId
+      );
+      if (regExists) {
+        nextFieldErrors.reg_no = 'IP Number already exists.';
       }
+    }
 
-      if (patientForm.bill_no) {
-        const billExists = patients.some((patient) =>
-          String(patient.bill_no ?? '').trim() === String(patientForm.bill_no).trim() &&
-          patient.id !== editingPatientId
-        );
-        if (billExists) {
-          nextFieldErrors.bill_no = 'Bill Number already exists.';
-        }
+    if (patientForm.bill_no) {
+      const billExists = patients.some((patient) =>
+        String(patient.bill_no ?? '').trim() === String(patientForm.bill_no).trim() &&
+        patient.id !== editingPatientId
+      );
+      if (billExists) {
+        nextFieldErrors.bill_no = 'Bill Number already exists.';
       }
     }
 
     setFieldErrors(nextFieldErrors);
 
-    if (nextFieldErrors.reg_no || nextFieldErrors.bill_no) {
+    if (Object.values(nextFieldErrors).some(Boolean)) {
       setPatientsLoading(false);
       return;
     }
@@ -423,18 +458,21 @@ function App() {
       ? 'Fully Paid'
       : 'Due';
 
+    const regNoValue = patientForm.operation_type === 'A' && patientForm.reg_no ? Number(patientForm.reg_no) : null;
+    const billNoValue = patientForm.bill_no ? Number(patientForm.bill_no) : null;
+
     const patientPayload = {
       first_name: patientForm.first_name,
       last_name: patientForm.last_name,
       operation_type: patientForm.operation_type || 'A',
-      reg_no: patientForm.operation_type === 'A' ? patientForm.reg_no : '',
-      bill_no: patientForm.bill_no,
+      reg_no: regNoValue,
+      bill_no: billNoValue,
       husband_name: patientForm.husband_name,
       gender: patientForm.gender,
       phone: patientForm.cell_no,
       alternative_number: patientForm.alternative_number,
       address: patientForm.address,
-      date_of_admission: patientForm.date_of_admission,
+      date_of_admission: patientForm.date_of_admission || null,
       diagnosis: patientForm.diagnosis,
       surgeon_name: patientForm.surgeon_name,
       anaesthetist_name: patientForm.anaesthetist_name,
@@ -599,6 +637,23 @@ function App() {
     await fetchPatients();
   };
 
+  const handleDeleteClick = (patient) => {
+    setPendingDeletePatient(patient);
+  };
+
+  const cancelDeletePatient = () => {
+    setPendingDeletePatient(null);
+  };
+
+  const confirmDeletePatient = async () => {
+    if (!pendingDeletePatient) {
+      return;
+    }
+
+    await handleDeletePatient(pendingDeletePatient.id);
+    setPendingDeletePatient(null);
+  };
+
   if (!hasSupabaseConfig) {
     return (
       <main className="auth-page">
@@ -733,6 +788,7 @@ function App() {
             userRole={userRole}
             handlePrintClick={handlePrintClick}
             handleEditPatient={handleEditPatient}
+            handleDeleteClick={handleDeleteClick}
             handleDeletePatient={handleDeletePatient}
             showPatientModal={showPatientModal}
             editingPatientId={editingPatientId}
@@ -743,6 +799,9 @@ function App() {
             patientMessage={patientMessage}
             fieldErrors={fieldErrors}
             canSavePatient={canSavePatient}
+            pendingDeletePatient={pendingDeletePatient}
+            cancelDeletePatient={cancelDeletePatient}
+            confirmDeletePatient={confirmDeletePatient}
             masterDiagnoses={masterDiagnoses}
             masterStaff={masterStaff}
             showPrintModal={showPrintModal}

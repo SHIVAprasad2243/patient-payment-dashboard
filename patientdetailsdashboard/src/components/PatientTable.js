@@ -139,7 +139,7 @@ const PatientTable = ({
                       {userRole === 'admin' && (
                         <button
                           className="text-button delete-btn"
-                          onClick={() => handleDeletePatient(patient.id)}
+                          onClick={() => handleDeletePatient(patient)}
                           title="Delete"
                         >
                           🗑

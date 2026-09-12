@@ -21,6 +21,7 @@ const Dashboard = ({
   userRole,
   handlePrintClick,
   handleEditPatient,
+  handleDeleteClick,
   handleDeletePatient,
   showPatientModal,
   editingPatientId,
@@ -31,6 +32,9 @@ const Dashboard = ({
   patientMessage,
   fieldErrors,
   canSavePatient,
+  pendingDeletePatient,
+  cancelDeletePatient,
+  confirmDeletePatient,
   masterDiagnoses,
   masterStaff,
   showPrintModal,
@@ -118,11 +122,48 @@ const Dashboard = ({
         userRole={userRole}
         handlePrintClick={handlePrintClick}
         handleEditPatient={handleEditPatient}
-        handleDeletePatient={handleDeletePatient}
+        handleDeletePatient={handleDeleteClick}
         selectedPatientIds={selectedPatientIds}
         handlePatientSelectionToggle={handlePatientSelectionToggle}
         handleSelectAllPatients={handleSelectAllPatients}
       />
+
+      {pendingDeletePatient && (
+        <div className="modal-overlay">
+          <div className="modal-content confirmation-modal">
+            <div className="modal-header">
+              <h2>Delete Patient</h2>
+              <button
+                className="close-modal"
+                onClick={cancelDeletePatient}
+                title="Cancel"
+                type="button"
+              >
+                &times;
+              </button>
+            </div>
+
+            <div className="confirmation-body">
+              <p>
+                Are you sure you want to delete the patient{' '}
+                <strong>
+                  {pendingDeletePatient.first_name || ''} {pendingDeletePatient.last_name || ''}
+                </strong>
+                ?
+              </p>
+            </div>
+
+            <div className="form-actions-row confirmation-actions">
+              <button type="button" className="secondary-button" onClick={cancelDeletePatient}>
+                Cancel
+              </button>
+              <button type="button" className="danger-button" onClick={confirmDeletePatient}>
+                Confirm
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {showPatientModal && (
         <PatientModal 

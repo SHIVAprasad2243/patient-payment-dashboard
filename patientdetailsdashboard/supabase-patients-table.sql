@@ -7,8 +7,24 @@ create table if not exists public.patients (
   phone text,
   diagnosis text,
   last_visit date,
+  operation_type text default 'A',
+  reg_no bigint,
+  bill_no bigint,
+  date_of_admission date,
   created_at timestamptz not null default now()
 );
+
+alter table public.patients
+  add column if not exists operation_type text default 'A';
+
+alter table public.patients
+  add column if not exists reg_no bigint;
+
+alter table public.patients
+  add column if not exists bill_no bigint;
+
+alter table public.patients
+  add column if not exists date_of_admission date;
 
 alter table public.patients enable row level security;
 
