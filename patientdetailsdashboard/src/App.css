@@ -1580,6 +1580,13 @@ background: linear-gradient(180deg, #0d6efd 0%, #0b5ed7 100%);
   padding: 10px 12px;
 }
 
+.field-error-text {
+  color: #dc2626;
+  font-size: 0.82rem;
+  margin-top: 6px;
+  line-height: 1.4;
+}
+
 .env-box {
   background: #0f172a;
   border-radius: 6px;

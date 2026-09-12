@@ -29,6 +29,8 @@ const Dashboard = ({
   handleImageChange,
   handlePatientSubmit,
   patientMessage,
+  fieldErrors,
+  canSavePatient,
   masterDiagnoses,
   masterStaff,
   showPrintModal,
@@ -132,6 +134,8 @@ const Dashboard = ({
           handlePatientSubmit={handlePatientSubmit}
           patientsLoading={patientsLoading}
           patientMessage={patientMessage}
+          fieldErrors={fieldErrors}
+          canSavePatient={canSavePatient}
           masterDiagnoses={masterDiagnoses}
           masterStaff={masterStaff}
           userRole={userRole}

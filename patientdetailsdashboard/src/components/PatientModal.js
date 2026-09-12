@@ -9,10 +9,19 @@ const PatientModal = ({
   handlePatientSubmit,
   patientsLoading,
   patientMessage,
+  fieldErrors = { reg_no: '', bill_no: '' },
+  canSavePatient = false,
   masterDiagnoses,
   masterStaff,
   userRole
 }) => {
+  const validationMessage =
+    patientMessage && patientMessage.includes('already exists')
+      ? patientMessage
+      : Object.values(fieldErrors).some(Boolean)
+        ? 'Please correct the highlighted fields.'
+        : '';
+
   return (
     <div className="modal-overlay">
       <div className="modal-content modal-large">
@@ -153,15 +162,16 @@ const PatientModal = ({
             </div>
             <div className="form-row">
               <div>
-                <label>Reg No</label>
-                <input
-                  name="reg_no"
-                  type="text"
-                  value={patientForm.reg_no}
+                <label htmlFor="operation_type">Operation Type</label>
+                <select
+                  id="operation_type"
+                  name="operation_type"
+                  value={patientForm.operation_type || 'A'}
                   onChange={handlePatientChange}
-                  placeholder="Reg No"
-                  pattern="[0-9]*"
-                />
+                >
+                  <option value="A">A</option>
+                  <option value="B">B</option>
+                </select>
               </div>
               <div>
                 <label>Bill No</label>
@@ -172,9 +182,39 @@ const PatientModal = ({
                   onChange={handlePatientChange}
                   placeholder="Bill No"
                   pattern="[0-9]*"
+                  aria-invalid={!!fieldErrors.bill_no}
                 />
+                {fieldErrors.bill_no && (
+                  <div className="field-error-text">{fieldErrors.bill_no}</div>
+                )}
               </div>
             </div>
+            {patientForm.operation_type !== 'B' && (
+              <div className="form-row">
+                <div style={{ width: '100%' }}>
+                  <label>IP Number</label>
+                  <input
+                    name="reg_no"
+                    type="text"
+                    value={patientForm.reg_no}
+                    onChange={handlePatientChange}
+                    placeholder="Reg No"
+                    pattern="[0-9]*"
+                    aria-invalid={!!fieldErrors.reg_no}
+                  />
+                  {fieldErrors.reg_no && (
+                    <div className="field-error-text">{fieldErrors.reg_no}</div>
+                  )}
+                </div>
+              </div>
+            )}
+            {patientForm.operation_type === 'B' && (
+              <div className="form-row">
+                <div style={{ width: '100%' }}>
+                  <p className="helper-text-small">Operation Type B shows Bill No only.</p>
+                </div>
+              </div>
+            )}
             <div>
               <label>Address</label>
               <textarea
@@ -582,8 +622,8 @@ const PatientModal = ({
               )}
               
 
-          {patientMessage && (
-            <p className="status-message">{patientMessage}</p>
+          {validationMessage && (
+            <p className="status-message" style={{ marginTop: 0 }}>{validationMessage}</p>
           )}
 
           <div className="form-actions-row">
@@ -591,7 +631,7 @@ const PatientModal = ({
               className="primary-button"
               style={{ width: '100%' }}
               type="submit"
-              disabled={patientsLoading}
+              disabled={patientsLoading || !canSavePatient}
             >
               {patientsLoading
                 ? 'Saving...'

@@ -133,6 +133,83 @@ describe('Payment calculations and Form fields', () => {
     expect(screen.queryByText('₹15000')).not.toBeInTheDocument();
   });
 
+  test('PatientModal shows Operation Type dropdown and toggles Reg No visibility', () => {
+    const mockFormA = {
+      first_name: '',
+      last_name: '',
+      reg_no: '123',
+      bill_no: '456',
+      husband_name: '',
+      gender: '',
+      age: '',
+      cell_no: '',
+      alternative_number: '',
+      address: '',
+      date_of_admission: '',
+      diagnosis: '',
+      surgeon_name: '',
+      anaesthetist_name: '',
+      assistant_name: '',
+      package_amount: '',
+      total_amount: '',
+      advance_payment: '',
+      discount: '',
+      patient_image: '',
+      cash_method: '',
+      surgeon_charge: '',
+      anaesthetist_charge: '',
+      assistant_charge: '',
+      bp: '',
+      pr: '',
+      rr: '',
+      spo2: '',
+      temperature: '',
+      heart: '',
+      lungs: '',
+      operation_type: 'A',
+    };
+
+    const { rerender } = render(
+      <PatientModal
+        editingPatientId={null}
+        setShowPatientModal={jest.fn()}
+        patientForm={mockFormA}
+        handlePatientChange={jest.fn()}
+        handleImageChange={jest.fn()}
+        handlePatientSubmit={jest.fn()}
+        patientsLoading={false}
+        patientMessage=""
+        masterDiagnoses={[]}
+        masterStaff={{ surgeons: [], anaesthetists: [], assistants: [] }}
+        userRole="admin"
+      />
+    );
+
+    expect(screen.getByLabelText('Operation Type')).toBeInTheDocument();
+    expect(screen.getByDisplayValue('A')).toBeInTheDocument();
+    expect(screen.getByPlaceholderText('Reg No')).toBeInTheDocument();
+    expect(screen.getByPlaceholderText('Bill No')).toBeInTheDocument();
+
+    rerender(
+      <PatientModal
+        editingPatientId={null}
+        setShowPatientModal={jest.fn()}
+        patientForm={{ ...mockFormA, operation_type: 'B', reg_no: '' }}
+        handlePatientChange={jest.fn()}
+        handleImageChange={jest.fn()}
+        handlePatientSubmit={jest.fn()}
+        patientsLoading={false}
+        patientMessage=""
+        masterDiagnoses={[]}
+        masterStaff={{ surgeons: [], anaesthetists: [], assistants: [] }}
+        userRole="admin"
+      />
+    );
+
+    expect(screen.queryByPlaceholderText('Reg No')).not.toBeInTheDocument();
+    expect(screen.getByPlaceholderText('Bill No')).toBeInTheDocument();
+  });
+
   test('PatientExportSheet includes the expected Excel columns for selected patients', () => {
     const exportRows = [
       {

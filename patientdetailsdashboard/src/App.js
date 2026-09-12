@@ -12,6 +12,7 @@ import TransferManagement from './components/TransferManagement';
 const emptyPatientForm = {
   first_name: '',
   last_name: '',
+  operation_type: 'A',
   reg_no: '',
   bill_no: '',
   husband_name: '',
@@ -106,6 +107,7 @@ function App() {
   const [patients, setPatients] = useState([]);
   const [patientsLoading, setPatientsLoading] = useState(false);
   const [patientMessage, setPatientMessage] = useState('');
+  const [fieldErrors, setFieldErrors] = useState({ reg_no: '', bill_no: '' });
   const [patientForm, setPatientForm] = useState(emptyPatientForm);
   const [editingPatientId, setEditingPatientId] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
@@ -268,8 +270,44 @@ function App() {
     setLoading(false);
   };
 
+  const canSavePatient = (() => {
+    const requiredFields = [
+      patientForm.first_name,
+      patientForm.gender,
+      patientForm.cell_no,
+      patientForm.bill_no,
+    ];
+
+    if (patientForm.operation_type !== 'B') {
+      requiredFields.push(patientForm.reg_no);
+    }
+
+    return requiredFields.every((value) => String(value ?? '').trim() !== '');
+  })();
+
   const handlePatientChange = (event) => {
     const { name, value } = event.target;
+
+    if (name === 'operation_type') {
+      setFieldErrors((currentErrors) => ({
+        ...currentErrors,
+        reg_no: '',
+        bill_no: '',
+      }));
+      setPatientForm((currentForm) => ({
+        ...currentForm,
+        operation_type: value,
+        ...(value === 'B' ? { reg_no: '' } : {}),
+      }));
+      return;
+    }
+
+    if (['reg_no', 'bill_no'].includes(name)) {
+      setFieldErrors((currentErrors) => ({
+        ...currentErrors,
+        [name]: '',
+      }));
+    }
 
     if (['cell_no', 'alternative_number', 'reg_no', 'bill_no'].includes(name)) {
       let cleanValue = value;
@@ -315,6 +353,7 @@ function App() {
     setPatientForm(emptyPatientForm);
     setEditingPatientId(null);
     setPatientMessage('');
+    setFieldErrors({ reg_no: '', bill_no: '' });
   };
 
   const handleImageChange = (e) => {
@@ -337,6 +376,37 @@ function App() {
     setPatientMessage('');
     setPatientsLoading(true);
 
+    const nextFieldErrors = { reg_no: '', bill_no: '' };
+
+    if (patientForm.operation_type === 'A') {
+      if (patientForm.reg_no) {
+        const regExists = patients.some((patient) =>
+          String(patient.reg_no ?? '').trim() === String(patientForm.reg_no).trim() &&
+          patient.id !== editingPatientId
+        );
+        if (regExists) {
+          nextFieldErrors.reg_no = 'IP Number already exists.';
+        }
+      }
+
+      if (patientForm.bill_no) {
+        const billExists = patients.some((patient) =>
+          String(patient.bill_no ?? '').trim() === String(patientForm.bill_no).trim() &&
+          patient.id !== editingPatientId
+        );
+        if (billExists) {
+          nextFieldErrors.bill_no = 'Bill Number already exists.';
+        }
+      }
+    }
+
+    setFieldErrors(nextFieldErrors);
+
+    if (nextFieldErrors.reg_no || nextFieldErrors.bill_no) {
+      setPatientsLoading(false);
+      return;
+    }
+
     const remaining_amount = Math.max(
       (Number(patientForm.package_amount) || 0) -
       (Number(patientForm.advance_payment) || 0) -
@@ -356,7 +426,8 @@ function App() {
     const patientPayload = {
       first_name: patientForm.first_name,
       last_name: patientForm.last_name,
-      reg_no: patientForm.reg_no,
+      operation_type: patientForm.operation_type || 'A',
+      reg_no: patientForm.operation_type === 'A' ? patientForm.reg_no : '',
       bill_no: patientForm.bill_no,
       husband_name: patientForm.husband_name,
       gender: patientForm.gender,
@@ -454,7 +525,8 @@ function App() {
     setPatientForm({
       first_name: patient.first_name || '',
       last_name: patient.last_name || '',
-      reg_no: patient.reg_no || '',
+      operation_type: patient.operation_type || 'A',
+      reg_no: (patient.operation_type === 'B' ? '' : patient.reg_no) || '',
       bill_no: patient.bill_no || '',
       husband_name: patient.husband_name || '',
       gender: patient.gender || '',
@@ -669,6 +741,8 @@ function App() {
             handleImageChange={handleImageChange}
             handlePatientSubmit={handlePatientSubmit}
             patientMessage={patientMessage}
+            fieldErrors={fieldErrors}
+            canSavePatient={canSavePatient}
             masterDiagnoses={masterDiagnoses}
             masterStaff={masterStaff}
             showPrintModal={showPrintModal}
