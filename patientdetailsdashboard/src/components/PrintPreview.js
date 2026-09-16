@@ -1,4 +1,6 @@
 import React from 'react';
+import { formatINR } from '../utils/numberFormat';
+import { formatDateIndian } from '../utils/dateFormat';
 
 const PrintPreview = ({ selectedPatient, handlePrint, setShowPrintModal }) => {
   const remainingBalance =
@@ -50,7 +52,7 @@ const PrintPreview = ({ selectedPatient, handlePrint, setShowPrintModal }) => {
                   <div className="print-item"><strong>Age/Gender:</strong> {selectedPatient.age || '-'} / {selectedPatient.gender || '-'}</div>
 
                   <div className="print-item"><strong>Relative Name:</strong> {selectedPatient.husband_name || '-'}</div>
-                  <div className="print-item"><strong>Bill Date:</strong> {selectedPatient.date_of_admission || '-'}</div>
+                  <div className="print-item"><strong>Bill Date:</strong> {formatDateIndian(selectedPatient.date_of_admission) || '-'}</div>
 
                   <div className="print-item"><strong>Phone No:</strong> {selectedPatient.phone || '-'}</div>
                   <div className="print-item"><strong>Reg No:</strong> {selectedPatient.reg_no || '-'}</div>
@@ -72,13 +74,13 @@ const PrintPreview = ({ selectedPatient, handlePrint, setShowPrintModal }) => {
                 <hr className="print-divider" />
                 <div className="print-billing-grid">
                   <div className="billing-left">
-                    <div className="print-item"><strong>Package:</strong> ₹{selectedPatient.package_amount || 0}</div>
+                    <div className="print-item"><strong>Package:</strong> {formatINR(selectedPatient.package_amount || 0)}</div>
                   </div>
                   <div className="billing-right">
-                    <div className="print-item"><strong>Advance Payment:</strong> ₹{selectedPatient.advance_payment || 0}</div>
-                    <div className="print-item"><strong>Remaining Balance:</strong> ₹{remainingBalance}</div>
-                    <div className="print-item"><strong>Discount:</strong> ₹{selectedPatient.discount || 0}</div>
-                    <div className="print-item"><strong>Total Amount:</strong> ₹{totalAmount}</div>
+                      <div className="print-item"><strong>Advance Payment:</strong> {formatINR(selectedPatient.advance_payment || 0)}</div>
+                      <div className="print-item"><strong>Remaining Balance:</strong> {formatINR(remainingBalance || 0)}</div>
+                      <div className="print-item"><strong>Discount:</strong> {formatINR(selectedPatient.discount || 0)}</div>
+                      <div className="print-item"><strong>Total Amount:</strong> {formatINR(totalAmount || 0)}</div>
                   </div>
                 </div>
               </div>
@@ -90,7 +92,7 @@ const PrintPreview = ({ selectedPatient, handlePrint, setShowPrintModal }) => {
                 <p>Authorized Signature</p>
               </div>
               <div className="print-date">
-                Printed on: {new Date().toLocaleDateString()}
+                Printed on: {formatDateIndian(new Date())}
               </div>
             </div>
           </div>

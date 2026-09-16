@@ -1,4 +1,6 @@
 import React from 'react';
+import ReactDatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 import StatsCards from './StatsCards';
 import PatientTable from './PatientTable';
 import PatientModal from './PatientModal';
@@ -72,7 +74,7 @@ const Dashboard = ({
           <div className="search-wrapper">
             <input
               type="text"
-              placeholder="Search by name, diagnosis or phone..."
+              placeholder="Search by name, diagnosis "
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="search-input"
@@ -82,19 +84,21 @@ const Dashboard = ({
           <div className="date-filter-group">
             <label>
               <span>Start</span>
-              <input
-                type="date"
-                value={startDate}
-                onChange={(e) => setStartDate(e.target.value)}
+              <ReactDatePicker
+                selected={startDate ? new Date(startDate) : null}
+                onChange={(date) => setStartDate(date ? date.toISOString().slice(0,10) : '')}
+                dateFormat="dd/MM/yyyy"
+                placeholderText="DD/MM/YYYY"
                 className="date-input"
               />
             </label>
             <label>
               <span>End</span>
-              <input
-                type="date"
-                value={endDate}
-                onChange={(e) => setEndDate(e.target.value)}
+              <ReactDatePicker
+                selected={endDate ? new Date(endDate) : null}
+                onChange={(date) => setEndDate(date ? date.toISOString().slice(0,10) : '')}
+                dateFormat="dd/MM/yyyy"
+                placeholderText="DD/MM/YYYY"
                 className="date-input"
               />
             </label>

@@ -1,4 +1,6 @@
 import React from 'react';
+import { formatINR } from '../utils/numberFormat';
+import { formatDateIndian } from '../utils/dateFormat';
 
 const PatientTable = ({
   patientsLoading,
@@ -93,7 +95,7 @@ const PatientTable = ({
                   </td>
                   <td>{patient.husband_name || '-'}</td>
                   <td>{patient.phone || '-'}</td>
-                  <td>{patient.date_of_admission || '-'}</td>
+                  <td>{formatDateIndian(patient.date_of_admission) || '-'}</td>
                   <td>
                     <div className="diagnosis-cell" title={patient.diagnosis}>
                       {patient.diagnosis || '-'}
@@ -104,10 +106,10 @@ const PatientTable = ({
                   <td>{patient.assistant_name || '-'}</td>
                   
                     {userRole === 'admin' && (
-                      <td>{patient.charge ? `₹${patient.charge}` : '₹0'}</td>
+                      <td>{patient.charge ? formatINR(patient.charge) : formatINR(0)}</td>
                     )}
-                  <td>₹{patient.remaining_amount || 0}</td>
-                  <td>₹{patient.total_amount || 0}</td>
+                  <td>{formatINR(patient.remaining_amount || 0)}</td>
+                  <td>{formatINR(patient.total_amount || 0)}</td>
                   <td>
                     <span
                       className={

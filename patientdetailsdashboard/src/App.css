@@ -591,59 +591,52 @@ body {
   max-width: none;
 }
 
-.dashboard-page {
-  flex: 1 1 auto;
-  padding: 20px 18px 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
+.dashboard-header,
+.dashboard-grid {
+  margin: 0;
+  max-width: none;
   width: 100%;
-  max-width: 100%;
-  min-width: 0;
-  margin: 0;
-  box-sizing: border-box;
 }
-
-.header-title h1 {
-  font-size: 1.5rem;
-  font-weight: 700;
-  margin: 0;
-  color: #0F172A;
-}
-
-.dashboard-header-simple {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  padding: 0;
-  margin-bottom: 2px;
-}
-
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(15, 23, 42, 0.6);
-  display: flex;
+.dashboard-header {
   align-items: center;
-  justify-content: center;
-  z-index: 1000;
-  backdrop-filter: blur(4px);
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 24px 80px rgba(15, 23, 42, 0.04);
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 16px; /* reduced padding for compact look */
+}
+.dashboard-page {
+  /* reduce base font size and paddings for compact look */
+  font-size: 0.9rem;
+  padding: 12px 14px 12px;
 }
 
-.modal-content.modal-large {
-  max-width: 800px;
-  width: 95%;
-  height: 90vh;
-  display: flex;
-  flex-direction: column;
-  position: relative;
-  background: white;
-  border-radius: 16px;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-  overflow: hidden;
+/* Make table and headers more compact */
+.records-table {
+  font-size: 0.82rem;
+}
+
+.records-table th {
+  padding: 6px 8px;
+  font-size: 0.73rem;
+}
+
+.records-table td {
+  padding: 6px 8px;
+}
+
+/* Reduce avatar sizes in table */
+.table-avatar,
+.table-avatar-placeholder {
+  width: 28px;
+}
+
+/* Ensure table container uses full width and allows horizontal scroll when needed */
+.dashboard-page .records-table-container {
+  overflow-x: auto;
+  overflow-y: visible;
 }
 
 .modal-header {
@@ -849,8 +842,8 @@ body {
 .header-top {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
-  gap: 16px;
+  align-items: center;
+  gap: 8px;
   margin-bottom: 6px;
 }
 
@@ -862,9 +855,9 @@ body {
 
 .header-title h2 {
   margin: 0;
-  font-size: 1.7rem;
+  font-size: 1.4rem;
   line-height: 1.08;
-  letter-spacing: -0.04em;
+  letter-spacing: -0.02em;
   color: #1f2937;
   font-weight: 800;
 }
@@ -872,45 +865,45 @@ body {
 .header-title p {
   margin: 0;
   color: #64748b;
-  font-size: 0.9rem;
-  line-height: 1.3;
+  font-size: 0.82rem;
+  line-height: 1.2;
 }
 
 .header-controls {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 10px;
   flex-wrap: wrap;
 }
 
 .filter-toolbar-row {
   display: flex;
-  gap: 14px;
+  gap: 8px;
   width: 100%;
-  align-items: flex-end;
+  align-items: center;
   justify-content: flex-end;
   padding: 0;
   background: transparent;
-  border-radius: 12px;
+  border-radius: 8px;
   box-sizing: border-box;
 }
 
 .search-wrapper {
   position: relative;
-  flex: 0 0 15%;
+  flex: 0 0 22%;
   min-width: 0;
-  margin-top: 0;
+margin-top: 17px;
 }
 
 .search-input {
   width: 100%;
-  height: 30px;
-  padding: 8px 12px;
+  height: 34px;
+  padding: 6px 10px;
   border: 1px solid #cfd8e3;
   border-radius: 8px;
   background: white;
   outline: none;
-  font-size: 0.96rem;
+  font-size: 0.9rem;
   color: #0f172a;
   transition: all 0.2s ease;
   box-sizing: border-box;
@@ -924,8 +917,8 @@ body {
 
 .date-filter-group {
   display: flex;
-  gap: 12px;
-  align-items: flex-end;
+  gap: 8px;
+  align-items: center;
   background: transparent;
   border: none;
   border-radius: 0;
@@ -939,14 +932,14 @@ body {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 6px;
+  gap: 4px;
   color: #475569;
-  font-size: 0.7rem;
+  font-size: 0.63rem;
   font-weight: 700;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
-  width: 150px;
-  min-width: 150px;
+  width: auto;
+  min-width: 0;
 }
 
 .date-filter-group span {
@@ -957,17 +950,49 @@ body {
 .date-input {
   width: 100%;
   border: 1px solid #cfd8e3;
-  border-radius: 8px;
-  padding: 8px 10px;
+  border-radius: 6px;
+  padding: 0 10px;
   background: white;
   color: #0f172a;
-  font-size: 0.95rem;
+  font-size: 0.88rem;
   min-width: 0;
-  height: 30px;
+  min-height: 38px;
   box-sizing: border-box;
 }
 
+/* Make date filters a fixed compact width so they align to the right neatly */
+.date-filter-group .date-input,
+.date-filter-group .react-datepicker-wrapper,
+.date-filter-group .react-datepicker__input-container input {
+  width: 120px;
+}
+
 .date-input:focus {
+  border-color: #2563eb;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.08);
+}
+
+/* Make react-datepicker input match design */
+.react-datepicker-wrapper,
+.react-datepicker__input-container {
+  width: 100%;
+}
+
+.react-datepicker__input-container input {
+  width: 100%;
+  border: 1px solid #cfd8e3;
+  border-radius: 6px;
+  padding: 0 13px;
+  background: white;
+  color: #0f172a;
+  font-size: 1rem;
+  min-width: 0;
+  min-height: 44px;
+  box-sizing: border-box;
+}
+
+.react-datepicker__input-container input:focus {
   border-color: #2563eb;
   outline: none;
   box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.08);
@@ -1004,8 +1029,8 @@ body {
 
 .records-table {
   width: 100%;
-  min-width: 1400px;
-  /* Force scroll for clear visibility of all 11+ columns */
+  min-width: 0; /* allow table to shrink to container */
+  table-layout: fixed; /* make columns respect max-widths and allow wrapping */
   border-collapse: collapse;
   text-align: left;
   font-size: 0.9rem;
@@ -1017,17 +1042,23 @@ body {
 }
 .records-table th {
   background: #F8FAFC;
-  padding: 12px 16px;
+  padding: 10px 12px;
   font-weight: 700;
   color: #0F172A;
   border-bottom: 2px solid #E2E8F0;
-  white-space: nowrap;
+  white-space: normal; /* allow header text to wrap */
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .records-table td {
-  padding: 14px 16px;
+  padding: 8px 10px;
   border-bottom: 1px solid #f1f5f9;
   color: #475569;
+  white-space: normal; /* allow cell text to wrap */
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  vertical-align: top;
 }
 
 .records-table tr:hover td {
@@ -1040,10 +1071,10 @@ body {
 }
 
 .diagnosis-cell {
-  max-width: 200px;
+  max-width: 220px;
   overflow: hidden;
   text-overflow: ellipsis;
-  white-space: nowrap;
+  white-space: nowrap; /* keep diagnosis compact */
 }
 
 .table-empty-state {
@@ -1057,6 +1088,25 @@ body {
   display: flex;
   justify-content: flex-end;
   margin: 16px 0 12px;
+}
+
+/* Make table more compact on small screens */
+@media (max-width: 900px) {
+  .records-table {
+    font-size: 0.82rem;
+  }
+
+  .records-table th {
+    padding: 8px 8px;
+  }
+
+  .records-table td {
+    padding: 6px 8px;
+  }
+
+  .search-wrapper {
+    flex: 0 0 35%;
+  }
 }
 
 .export-sheet-actions {
@@ -1372,6 +1422,7 @@ background: linear-gradient(180deg, #0d6efd 0%, #0b5ed7 100%);
   background: #ffffff;
   outline: none;
   transition: all 0.2s ease;
+  height: 44px;
 }
 
 .auth-panel {
@@ -1424,8 +1475,8 @@ background: linear-gradient(180deg, #0d6efd 0%, #0b5ed7 100%);
 .dashboard-grid {
   align-items: start;
   display: grid;
-  gap: 22px;
-  grid-template-columns: minmax(320px, 420px) 1fr;
+  gap: 16px;
+  grid-template-columns: minmax(260px, 360px) 1fr;
 }
 
 .patient-form,
@@ -1962,6 +2013,7 @@ input[aria-invalid='true'], select[aria-invalid='true'], textarea[aria-invalid='
 
 .search-wrapper {
   width: 360px;
+  margin-top: 17px;
 }
 
 /* Modal and Table Overrides */

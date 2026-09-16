@@ -1,4 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import ReactDatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+import { formatDateIndian } from '../utils/dateFormat';
 import { supabase } from '../lib/supabaseClient';
 
 const emptyTransferForm = {
@@ -277,11 +280,15 @@ const TransferManagement = ({ userRole }) => {
             </div>
             <div>
               <label>Transfer Date</label>
-              <input
-                type="date"
-                name="transfer_date"
-                value={formData.transfer_date}
-                onChange={handleInputChange}
+              <ReactDatePicker
+                selected={formData.transfer_date ? new Date(formData.transfer_date) : null}
+                onChange={(date) => {
+                  const iso = date ? date.toISOString().slice(0,10) : '';
+                  setFormData((prev) => ({ ...prev, transfer_date: iso }));
+                }}
+                dateFormat="dd/MM/yyyy"
+                placeholderText="DD/MM/YYYY"
+                className="date-input"
               />
             </div>
           </div>
@@ -334,7 +341,7 @@ const TransferManagement = ({ userRole }) => {
                   <td>{record.diagnosis || '-'}</td>
                   <td>{record.transfer_to || '-'}</td>
                   <td>{record.transfer_reason || '-'}</td>
-                  <td>{record.transfer_date || '-'}</td>
+                  <td>{formatDateIndian(record.transfer_date) || '-'}</td>
                   <td>
                     {isAdmin ? (
                       <div className="table-actions">

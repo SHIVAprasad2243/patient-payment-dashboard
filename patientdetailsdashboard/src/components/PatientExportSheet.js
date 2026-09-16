@@ -31,7 +31,18 @@ const PatientExportSheet = ({ selectedPatients, allPatients = [], disabled = tru
 
         return [
           idx + 1,
-          patient.date_of_admission || '-',
+          // Export date in DD/MM/YYYY
+          (patient.date_of_admission && (() => {
+            try {
+              const d = new Date(patient.date_of_admission);
+              const day = String(d.getDate()).padStart(2, '0');
+              const month = String(d.getMonth() + 1).padStart(2, '0');
+              const year = d.getFullYear();
+              return `${day}/${month}/${year}`;
+            } catch (e) {
+              return patient.date_of_admission || '-';
+            }
+          })()) || '-',
           `${patient.first_name || ''} ${patient.last_name || ''}`.trim() || '-',
           patient.diagnosis || '-',
           format(amount),

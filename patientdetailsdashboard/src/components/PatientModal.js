@@ -1,4 +1,7 @@
 import React from 'react';
+import { formatINR, formatINRNoSymbol } from '../utils/numberFormat';
+import ReactDatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 
 const PatientModal = ({
   editingPatientId,
@@ -168,11 +171,15 @@ const PatientModal = ({
               </div>
               <div>
                 <label>Date of admission</label>
-                <input
-                  name="date_of_admission"
-                  type="date"
-                  value={patientForm.date_of_admission}
-                  onChange={handlePatientChange}
+                <ReactDatePicker
+                  selected={patientForm.date_of_admission ? new Date(patientForm.date_of_admission) : null}
+                  onChange={(date) => {
+                    const iso = date ? date.toISOString().slice(0, 10) : '';
+                    handlePatientChange({ target: { name: 'date_of_admission', value: iso } });
+                  }}
+                  dateFormat="dd/MM/yyyy"
+                  placeholderText="DD/MM/YYYY"
+                  className="full-width-input"
                   aria-invalid={!!fieldErrors.date_of_admission}
                 />
                 {fieldErrors.date_of_admission && (
@@ -186,11 +193,11 @@ const PatientModal = ({
                 <select
                   id="operation_type"
                   name="operation_type"
-                  value={patientForm.operation_type || 'A'}
+                  value={patientForm.operation_type || 'Surgery-IP'}
                   onChange={handlePatientChange}
                 >
-                  <option value="A">A</option>
-                  <option value="B">B</option>
+                  <option value="Surgery-IP">Surgery-IP</option>
+                  <option value="General">General</option>
                 </select>
               </div>
               <div>
@@ -442,8 +449,8 @@ const PatientModal = ({
                     <label>Package Amount (₹)</label>
                     <input
                       name="package_amount"
-                      type="number"
-                      value={patientForm.package_amount}
+                      type="text"
+                      value={formatINRNoSymbol(patientForm.package_amount)}
                       onChange={handlePatientChange}
                       placeholder="0"
                     />
@@ -453,8 +460,8 @@ const PatientModal = ({
                     <label>Advance Payment (₹)</label>
                     <input
                       name="advance_payment"
-                      type="number"
-                      value={patientForm.advance_payment}
+                      type="text"
+                      value={formatINRNoSymbol(patientForm.advance_payment)}
                       onChange={handlePatientChange}
                       placeholder="0"
                     />
@@ -469,8 +476,8 @@ const PatientModal = ({
                       <label>Charge (₹)</label>
                       <input
                         name="charge"
-                        type="number"
-                        value={patientForm.charge}
+                        type="text"
+                        value={formatINRNoSymbol(patientForm.charge)}
                         onChange={handlePatientChange}
                         placeholder="0"
                       />
@@ -484,8 +491,8 @@ const PatientModal = ({
                     <label>Balance (₹)</label>
                     <input
                       name="balance"
-                      type="number"
-                      value={patientForm.balance}
+                      type="text"
+                      value={formatINRNoSymbol(patientForm.balance)}
                       onChange={handlePatientChange}
                       placeholder="0"
                     />
@@ -495,8 +502,8 @@ const PatientModal = ({
                     <label>Discount (₹)</label>
                     <input
                       name="discount"
-                      type="number"
-                      value={patientForm.discount}
+                      type="text"
+                      value={formatINRNoSymbol(patientForm.discount)}
                       onChange={handlePatientChange}
                       placeholder="0"
                     />
@@ -509,13 +516,14 @@ const PatientModal = ({
                     <label>Remaining Balance (₹)</label>
 
                     <div className="balance-box">
-                      ₹
-                      {Math.max(
-                        (Number(patientForm.package_amount) || 0) -
-                        (Number(patientForm.advance_payment) || 0) -
-                        (Number(patientForm.balance) || 0) -
-                        (Number(patientForm.discount) || 0),
-                        0
+                      {formatINR(
+                        Math.max(
+                          (Number(patientForm.package_amount) || 0) -
+                          (Number(patientForm.advance_payment) || 0) -
+                          (Number(patientForm.balance) || 0) -
+                          (Number(patientForm.discount) || 0),
+                          0
+                        )
                       )}
                     </div>
                   </div>
@@ -524,12 +532,13 @@ const PatientModal = ({
                     <label>Total Amount (₹)</label>
 
                     <div className="balance-box">
-                      ₹
-                      {patientForm.advance_payment || patientForm.balance
-                        ? (Number(patientForm.advance_payment) || 0) +
-                        (Number(patientForm.balance) || 0) +
-                        (Number(patientForm.discount) || 0)
-                        : 0}
+                      {formatINR(
+                        patientForm.advance_payment || patientForm.balance
+                          ? (Number(patientForm.advance_payment) || 0) +
+                          (Number(patientForm.balance) || 0) +
+                          (Number(patientForm.discount) || 0)
+                          : 0
+                      )}
                     </div>
                   </div>
                 </div>
@@ -587,8 +596,8 @@ const PatientModal = ({
                       <label>Surgeon Charge (₹)</label>
                       <input
                         name="surgeon_charge"
-                        type="number"
-                        value={patientForm.surgeon_charge}
+                        type="text"
+                        value={formatINRNoSymbol(patientForm.surgeon_charge)}
                         onChange={handlePatientChange}
                         placeholder="0"
                       />
@@ -597,8 +606,8 @@ const PatientModal = ({
                       <label>Anaesthetist Charge (₹)</label>
                       <input
                         name="anaesthetist_charge"
-                        type="number"
-                        value={patientForm.anaesthetist_charge}
+                        type="text"
+                        value={formatINRNoSymbol(patientForm.anaesthetist_charge)}
                         onChange={handlePatientChange}
                         placeholder="0"
                       />
@@ -609,8 +618,8 @@ const PatientModal = ({
                       <label>Assistant Charge (₹)</label>
                       <input
                         name="assistant_charge"
-                        type="number"
-                        value={patientForm.assistant_charge}
+                        type="text"
+                        value={formatINRNoSymbol(patientForm.assistant_charge)}
                         onChange={handlePatientChange}
                         placeholder="0"
                       />
@@ -619,8 +628,8 @@ const PatientModal = ({
                       <label>Staff Charge (₹)</label>
                       <input
                         name="staff_charges"
-                        type="number"
-                        value={patientForm.staff_charges}
+                        type="text"
+                        value={formatINRNoSymbol(patientForm.staff_charges)}
                         onChange={handlePatientChange}
                         placeholder="0"
                       />
@@ -631,8 +640,8 @@ const PatientModal = ({
                       <label>Ayyas Charge (₹)</label>
                       <input
                         name="ayyas_charges"
-                        type="number"
-                        value={patientForm.ayyas_charges}
+                        type="text"
+                        value={formatINRNoSymbol(patientForm.ayyas_charges)}
                         onChange={handlePatientChange}
                         placeholder="0"
                       />

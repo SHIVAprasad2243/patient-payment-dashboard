@@ -320,6 +320,22 @@ function App() {
       }));
     }
 
+    // Handle numeric amount fields: store raw numeric string (no commas/symbols)
+    const amountFields = ['package_amount','advance_payment','discount','balance','surgeon_charge','anaesthetist_charge','assistant_charge','staff_charges','ayyas_charges','charge'];
+    if (amountFields.includes(name)) {
+      // Remove any non-numeric or non-dot characters (commas, ₹, spaces)
+      let clean = String(value || '').replace(/[^0-9.]/g, '');
+      // Allow only one decimal point
+      const parts = clean.split('.');
+      clean = parts.shift() + (parts.length ? '.' + parts.join('') : '');
+
+      setPatientForm((currentForm) => ({
+        ...currentForm,
+        [name]: clean,
+      }));
+      return;
+    }
+
     if (['cell_no', 'alternative_number', 'reg_no', 'bill_no'].includes(name)) {
       let cleanValue = value;
 
@@ -696,11 +712,10 @@ function App() {
     const matchesSearch =
       p.first_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       p.last_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      p.phone?.includes(searchQuery) ||
-      p.diagnosis?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      p.surgeon_name?.toLowerCase().includes(searchQuery.toLowerCase());
+      // p.phone?.includes(searchQuery) ||
+      p.diagnosis?.toLowerCase().includes(searchQuery.toLowerCase());
     // Also allow searching by IP (reg_no) and Bill No
-    const regMatch = String(p.reg_no ?? '').includes(searchQuery);
+    const regMatch = String(p.reg_no ?? '').includes(searchQuery); 
     const billMatch = String(p.bill_no ?? '').includes(searchQuery);
 
     if (!matchesSearch && !(regMatch || billMatch)) {
