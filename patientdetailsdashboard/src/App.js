@@ -564,8 +564,8 @@ function App() {
       first_name: patient.first_name || '',
       last_name: patient.last_name || '',
       operation_type: patient.operation_type || 'A',
-      reg_no: (patient.operation_type === 'B' ? '' : patient.reg_no) || '',
-      bill_no: patient.bill_no || '',
+      reg_no: (patient.operation_type === 'B' ? '' : (patient.reg_no != null ? String(patient.reg_no) : '')),
+      bill_no: patient.bill_no != null ? String(patient.bill_no) : '',
       husband_name: patient.husband_name || '',
       gender: patient.gender || '',
       age: patient.age || '',
@@ -699,8 +699,11 @@ function App() {
       p.phone?.includes(searchQuery) ||
       p.diagnosis?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       p.surgeon_name?.toLowerCase().includes(searchQuery.toLowerCase());
+    // Also allow searching by IP (reg_no) and Bill No
+    const regMatch = String(p.reg_no ?? '').includes(searchQuery);
+    const billMatch = String(p.bill_no ?? '').includes(searchQuery);
 
-    if (!matchesSearch) {
+    if (!matchesSearch && !(regMatch || billMatch)) {
       return false;
     }
 
