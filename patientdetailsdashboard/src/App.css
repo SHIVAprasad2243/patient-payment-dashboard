@@ -2018,17 +2018,37 @@ input[aria-invalid='true'], select[aria-invalid='true'], textarea[aria-invalid='
 
 /* Modal and Table Overrides */
 .modal-overlay {
-  background: rgba(15, 23, 42, 0.7);
+  position: fixed;
+  inset: 0; /* top:0; right:0; bottom:0; left:0 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(15, 23, 42, 0.6);
   backdrop-filter: blur(4px);
+  z-index: 9999;
 }
 
 .modal-content {
-     border-radius: 20px;
-    border: none;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-    padding: 22px;
-    background: white;
+  border-radius: 16px;
+  border: none;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  padding: 18px;
+  background: white;
+  max-width: 920px;
+  width: calc(100% - 48px);
+  max-height: 90vh;
+  overflow: auto;
+  position: relative;
+}
 
+/* Larger modal variant */
+.modal-content.modal-large {
+  max-width: 1100px;
+}
+
+/* Confirmation modals can be smaller */
+.modal-content.confirmation-modal {
+  max-width: 520px;
 }
 
 
