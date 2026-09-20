@@ -2,6 +2,7 @@ import { render, screen } from '@testing-library/react';
 import App, { sortPatientsByAdmissionDate } from './App';
 import PatientModal from './components/PatientModal';
 import PatientTable from './components/PatientTable';
+import { parseLocalDate, toLocalDateInputValue } from './utils/dateFormat';
 
 test('renders Supabase setup message when env vars are missing', () => {
   render(<App />);
@@ -116,4 +117,11 @@ test('sorts patients by admission date in descending order', () => {
   ];
 
   expect(sortPatientsByAdmissionDate(patients).map((patient) => patient.id)).toEqual([2, 3, 1, 4]);
+});
+
+test('keeps the selected local date without shifting to previous day', () => {
+  const selected = new Date(2026, 8, 20);
+
+  expect(toLocalDateInputValue(selected)).toBe('2026-09-20');
+  expect(parseLocalDate('2026-09-20').getDate()).toBe(20);
 });

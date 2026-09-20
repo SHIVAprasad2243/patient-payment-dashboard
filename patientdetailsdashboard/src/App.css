@@ -1012,6 +1012,8 @@ margin-top: 17px;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
   scrollbar-width: thin;
   scrollbar-color: #0F766E #f1f5f9;
+      height: 62%;
+
 }
 
 .records-table-container::-webkit-scrollbar {
@@ -1861,6 +1863,7 @@ input[aria-invalid='true'], select[aria-invalid='true'], textarea[aria-invalid='
 @media (max-width: 560px) {
   .dashboard-page {
     padding: 18px 12px;
+    height:auto
   }
 
   .dashboard-header,
@@ -2035,6 +2038,8 @@ input[aria-invalid='true'], select[aria-invalid='true'], textarea[aria-invalid='
   width: 100%;
   max-width: 100%;
   box-sizing: border-box;
+    overflow-y: hidden;
+
 }
 
 .header-top {

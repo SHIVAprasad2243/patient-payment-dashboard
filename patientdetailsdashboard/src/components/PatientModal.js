@@ -1,5 +1,6 @@
 import React from 'react';
 import { formatINR, formatINRNoSymbol } from '../utils/numberFormat';
+import { parseLocalDate, toLocalDateInputValue } from '../utils/dateFormat';
 import ReactDatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 
@@ -172,9 +173,9 @@ const PatientModal = ({
               <div>
                 <label>Date of admission</label>
                 <ReactDatePicker
-                  selected={patientForm.date_of_admission ? new Date(patientForm.date_of_admission) : null}
+                  selected={patientForm.date_of_admission ? parseLocalDate(patientForm.date_of_admission) : null}
                   onChange={(date) => {
-                    const iso = date ? date.toISOString().slice(0, 10) : '';
+                    const iso = date ? toLocalDateInputValue(date) : '';
                     handlePatientChange({ target: { name: 'date_of_admission', value: iso } });
                   }}
                   dateFormat="dd/MM/yyyy"
@@ -193,11 +194,11 @@ const PatientModal = ({
                 <select
                   id="operation_type"
                   name="operation_type"
-                  value={patientForm.operation_type || 'Surgery-IP'}
+                  value={patientForm.operation_type || 'A'}
                   onChange={handlePatientChange}
                 >
-                  <option value="Surgery-IP">Surgery-IP</option>
-                  <option value="General">General</option>
+                  <option value="A">Surgery-IP</option>
+                  <option value="B">General</option>
                 </select>
               </div>
               <div>

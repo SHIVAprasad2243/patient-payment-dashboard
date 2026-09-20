@@ -280,16 +280,24 @@ function App() {
   };
 
   const canSavePatient = (() => {
+    const op = String(patientForm.operation_type || '').toLowerCase();
+
+    const isSurgery = op === 'a' || /surgery/i.test(op) || op === 'surgery-ip';
+    const isGeneral = /general/i.test(op) || op === 'general';
+
     const requiredFields = [
       patientForm.first_name,
       patientForm.last_name,
       patientForm.gender,
       patientForm.cell_no,
       patientForm.date_of_admission,
-      patientForm.bill_no,
     ];
 
-    if (patientForm.operation_type !== 'B') {
+    // Bill no is required for all types (surgery, general, billing)
+    requiredFields.push(patientForm.bill_no);
+
+    // Surgery-IP requires reg_no as well
+    if (isSurgery) {
       requiredFields.push(patientForm.reg_no);
     }
 
@@ -427,7 +435,12 @@ function App() {
     if (!patientForm.cell_no?.trim()) nextFieldErrors.cell_no = 'Phone number is required.';
     if (!patientForm.date_of_admission) nextFieldErrors.date_of_admission = 'Date of admission is required.';
     if (!patientForm.bill_no?.trim()) nextFieldErrors.bill_no = 'Bill No is required.';
-    if (patientForm.operation_type !== 'B' && !patientForm.reg_no?.trim()) {
+
+    // Require reg_no when operation type is Surgery-IP (A or 'Surgery-IP')
+    const opType = String(patientForm.operation_type || '').toLowerCase();
+    const isSurgeryIP = opType === 'a' || opType === 'surgery-ip' || /surgery/i.test(opType);
+
+    if (isSurgeryIP && !patientForm.reg_no?.trim()) {
       nextFieldErrors.reg_no = 'IP Number is required.';
     }
 

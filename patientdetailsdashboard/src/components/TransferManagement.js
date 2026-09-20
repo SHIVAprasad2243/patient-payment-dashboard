@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import ReactDatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import { formatDateIndian } from '../utils/dateFormat';
+import { formatDateIndian, parseLocalDate, toLocalDateInputValue } from '../utils/dateFormat';
 import { supabase } from '../lib/supabaseClient';
 
 const emptyTransferForm = {
@@ -281,9 +281,9 @@ const TransferManagement = ({ userRole }) => {
             <div>
               <label>Transfer Date</label>
               <ReactDatePicker
-                selected={formData.transfer_date ? new Date(formData.transfer_date) : null}
+                selected={formData.transfer_date ? parseLocalDate(formData.transfer_date) : null}
                 onChange={(date) => {
-                  const iso = date ? date.toISOString().slice(0,10) : '';
+                  const iso = date ? toLocalDateInputValue(date) : '';
                   setFormData((prev) => ({ ...prev, transfer_date: iso }));
                 }}
                 dateFormat="dd/MM/yyyy"

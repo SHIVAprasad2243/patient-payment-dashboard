@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import { parseLocalDate, toLocalDateInputValue } from '../utils/dateFormat';
 import StatsCards from './StatsCards';
 import PatientTable from './PatientTable';
 import PatientModal from './PatientModal';
@@ -85,8 +86,8 @@ const Dashboard = ({
             <label>
               <span>Start</span>
               <ReactDatePicker
-                selected={startDate ? new Date(startDate) : null}
-                onChange={(date) => setStartDate(date ? date.toISOString().slice(0,10) : '')}
+                selected={startDate ? parseLocalDate(startDate) : null}
+                onChange={(date) => setStartDate(date ? toLocalDateInputValue(date) : '')}
                 dateFormat="dd/MM/yyyy"
                 placeholderText="DD/MM/YYYY"
                 className="date-input"
@@ -95,8 +96,8 @@ const Dashboard = ({
             <label>
               <span>End</span>
               <ReactDatePicker
-                selected={endDate ? new Date(endDate) : null}
-                onChange={(date) => setEndDate(date ? date.toISOString().slice(0,10) : '')}
+                selected={endDate ? parseLocalDate(endDate) : null}
+                onChange={(date) => setEndDate(date ? toLocalDateInputValue(date) : '')}
                 dateFormat="dd/MM/yyyy"
                 placeholderText="DD/MM/YYYY"
                 className="date-input"
