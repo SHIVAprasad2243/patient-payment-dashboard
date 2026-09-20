@@ -1,0 +1,68 @@
+/* Print-specific CSS for patient details */
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial, sans-serif;
+  color: #0f172a;
+  background: white;
+}
+.printable-content {
+  max-width: 1100px;
+  margin: 18px auto;
+  padding: 12px 18px;
+  box-sizing: border-box;
+}
+.print-hospital-header {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+.print-logo { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; }
+.print-hospital-info h1 { margin: 0; color: #0f766e; font-size: 32px; }
+.print-hospital-info p { margin: 2px 0; color: #475569; }
+.print-rule { height: 3px; background: #0ea5a4; border: none; margin: 12px 0 18px 0; }
+
+/* Two-column layout */
+.print-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  align-items: start;
+}
+.print-item { margin: 6px 0; display: flex; align-items: flex-start; gap: 8px; }
+.print-item strong { display: block; width: 140px; flex: 0 0 140px; font-weight: 700; }
+.print-value { display: block; flex: 1 1 auto; }
+
+.print-billing-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.print-divider { border: none; border-top: 1px solid #e6eef6; margin: 18px 0; }
+
+.print-footer { display:flex; justify-content:space-between; align-items:center; margin-top: 28px; }
+.signature-line { width: 160px; height: 2px; background:#111827; margin-bottom:6px; }
+
+/* Start billing section on a new printed page */
+.print-billing-section {
+  page-break-before: always;
+  break-before: page;
+}
+
+@media print {
+  body { margin: 10mm; }
+  .no-print { display: none !important; }
+  .printable-content { max-width: 100%; margin: 0; padding: 0; }
+}
+
+/* Styles for print-details table layout */
+.print-details-table { width: 100%; border-collapse: collapse; margin-bottom: 8px; }
+.print-details-table td.label { width: 22%; vertical-align: top; padding: 6px 0; font-weight: 700; }
+.print-details-table td.value { width: 28%; vertical-align: top; padding: 6px 0; }
+.print-details-table td.label + td.value { padding-left: 10px; }
+
+@media print {
+  .print-details-table td.label { width: 20%; }
+  .print-details-table td.value { width: 30%; }
+}

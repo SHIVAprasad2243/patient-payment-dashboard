@@ -624,12 +624,17 @@ function App() {
     setShowPrintModal(true);
   };
 
-  const handlePrint = () => {
-    const originalTitle = document.title;
-    document.title = "Siddhartha Nursing Home";
+const handlePrint = () => {
+  const originalTitle = document.title;
+
+  document.title = "Siddhartha Nursing Home";
+
+  setTimeout(() => {
     window.print();
     document.title = originalTitle;
-  };
+  }, 100);
+};
+
 
   const handleDeletePatient = async (patientId) => {
     setPatientMessage('');

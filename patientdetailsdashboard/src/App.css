@@ -6,8 +6,10 @@ html, body, #root {
   overflow-x: hidden;
 }
 
+
 body {
   min-height: 100vh;
+  /* visibility: hidden; */
 }
 
 .auth-page {
@@ -1029,8 +1031,9 @@ margin-top: 17px;
 
 .records-table {
   width: 100%;
-  min-width: 0; /* allow table to shrink to container */
-  table-layout: fixed; /* make columns respect max-widths and allow wrapping */
+  /* force a minimum width so the table can overflow horizontally and show a scrollbar */
+  min-width: 1200px;
+  table-layout: auto; /* let columns size naturally so horizontal scroll works */
   border-collapse: collapse;
   text-align: left;
   font-size: 0.9rem;
@@ -1042,23 +1045,27 @@ margin-top: 17px;
 }
 .records-table th {
   background: #F8FAFC;
-  padding: 10px 12px;
+  padding: 8px 10px;
   font-weight: 700;
   color: #0F172A;
   border-bottom: 2px solid #E2E8F0;
-  white-space: normal; /* allow header text to wrap */
+  white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  font-size: 0.72rem;
 }
 
 .records-table td {
-  padding: 8px 10px;
+  padding: 6px 8px;
   border-bottom: 1px solid #f1f5f9;
   color: #475569;
-  white-space: normal; /* allow cell text to wrap */
-  word-break: break-word;
-  overflow-wrap: anywhere;
-  vertical-align: top;
+  /* keep cells on one line so horizontal scrollbar appears instead of wrapping */
+  white-space: nowrap;
+  word-break: normal;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  vertical-align: middle;
+  font-size: 0.78rem;
 }
 
 .records-table tr:hover td {
@@ -1355,24 +1362,27 @@ margin-top: 17px;
     background: white !important;
   }
 
+  /* Hide everything except the printable area to ensure only relevant content prints. */
   body * {
-    visibility: hidden;
+    display: none !important;
   }
 
+  /* Show the printable area and its descendants */
   #printable-area,
   #printable-area * {
-    visibility: visible;
+    display: block !important;
   }
 
   #printable-area {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    margin: 0;
-    padding: 0;
+    position: static !important;
+    left: auto !important;
+    top: auto !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
   }
 
+  /* Keep header/actions hidden on print */
   .no-print {
     display: none !important;
   }
@@ -1491,18 +1501,19 @@ background: linear-gradient(180deg, #0d6efd 0%, #0b5ed7 100%);
 .patient-form {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  position: sticky;
-  top: 20px;
-}
-
-.eyebrow {
-  color: #0f766e;
-  font-size: 0.78rem;
-  font-weight: 700;
+  gap: 12px;
+  padding: 12px 14px;
+  border-bottom: 1px solid #f1f5f9;
+  color: #475569;
+  /* allow form content to wrap normally */
+  white-space: normal;
+  word-break: break-word;
+  overflow: visible;
+  font-size: 0.95rem;
+  font-weight: 400;
   letter-spacing: 0;
-  margin: 0 0 10px;
-  text-transform: uppercase;
+  margin: 0 0 12px;
+  text-transform: none;
 }
 
 .auth-panel h1 {
@@ -1658,6 +1669,30 @@ input[aria-invalid='true'], select[aria-invalid='true'], textarea[aria-invalid='
   display: grid;
   gap: 12px;
   grid-template-columns: 1fr 1fr;
+}
+
+/* Ensure grid children can shrink and avoid forcing overflow */
+.form-row > div {
+  min-width: 0;
+}
+
+/* Force form controls to use full available width in modal forms */
+.patient-form input[type="text"],
+.patient-form input[type="number"],
+.patient-form input[type="tel"],
+.patient-form select,
+.patient-form textarea,
+.patient-form .full-width-input,
+.patient-form .react-datepicker__input-container input {
+  width: 100% !important;
+  min-width: 0 !important;
+  box-sizing: border-box;
+}
+
+/* Restore textarea natural height but full width */
+.patient-form textarea {
+  white-space: normal;
+  overflow: auto;
 }
 
 .payment-status-box {
@@ -1851,25 +1886,40 @@ input[aria-invalid='true'], select[aria-invalid='true'], textarea[aria-invalid='
 }
 
 .table-avatar {
-  width: 32px;
-  height: 32px;
+  width: 24px;
+  height: 24px;
   border-radius: 50%;
   object-fit: cover;
   border: 1px solid #e2e8f0;
 }
 
 .table-avatar-placeholder {
-  width: 32px;
-  height: 32px;
+  width: 24px;
+  height: 24px;
   border-radius: 50%;
   background: #0263e0;
   color: white;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.8rem;
+  font-size: 0.72rem;
   font-weight: 700;
   border: 1px solid #e2e8f0;
+}
+
+.table-patient-info {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.table-patient-info span {
+  display: block;
+  max-width: 140px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 700;
 }
 
 /* Payment Summary & Highlighted Balance */

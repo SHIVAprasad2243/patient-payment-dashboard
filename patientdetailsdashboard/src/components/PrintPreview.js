@@ -1,8 +1,6 @@
 import React from 'react';
-import { formatINR } from '../utils/numberFormat';
-import { formatDateIndian } from '../utils/dateFormat';
 
-const PrintPreview = ({ selectedPatient, handlePrint, setShowPrintModal }) => {
+const PrintPreview = ({ selectedPatient, setShowPrintModal }) => {
   const remainingBalance =
     selectedPatient.remaining_amount !== undefined && selectedPatient.remaining_amount !== null
       ? selectedPatient.remaining_amount
@@ -11,6 +9,188 @@ const PrintPreview = ({ selectedPatient, handlePrint, setShowPrintModal }) => {
     (Number(selectedPatient.total_amount) || 0) - (Number(selectedPatient.discount) || 0),
     0
   );
+const handlePrint = () => {
+  const printContent = document.getElementById("printable-area");
+
+  if (!printContent) {
+    console.error("Printable content not found");
+    return;
+  }
+
+  const printWindow = window.open("", "_blank", "width=900,height=700");
+
+  if (!printWindow) {
+    alert("Please allow popups for this website to print.");
+    return;
+  }
+
+  printWindow.document.open();
+
+  printWindow.document.write(`
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <title>Siddhartha Nursing Home</title>
+
+        <style>
+          @page {
+            size: A4;
+            margin: 15mm;
+          }
+
+          * {
+            box-sizing: border-box;
+          }
+
+          html,
+          body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            background: white;
+            color: black;
+            font-family: Arial, sans-serif;
+          }
+
+          .printable-content {
+            width: 100%;
+            background: white;
+            padding: 10px;
+          }
+
+          .print-hospital-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 25px;
+            border-bottom: 2px solid #0f766e;
+            padding-bottom: 15px;
+          }
+
+          .print-logo {
+            width: 80px;
+            height: 80px;
+            object-fit: contain;
+          }
+
+          .print-hospital-info {
+            text-align: center;
+          }
+
+          .print-hospital-info h1 {
+            margin: 0 0 8px 0;
+            color: #0f766e;
+            font-size: 24px;
+          }
+
+          .print-hospital-info p {
+            margin: 4px 0;
+            font-size: 13px;
+          }
+
+          .print-section {
+            margin-bottom: 20px;
+            page-break-inside: avoid;
+            break-inside: avoid;
+          }
+
+          .print-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px 30px;
+          }
+
+          .print-item {
+            font-size: 14px;
+            line-height: 1.5;
+            word-break: break-word;
+          }
+
+          .print-item strong {
+            font-weight: 700;
+          }
+
+          .print-divider {
+            border: none;
+            border-top: 1px solid #999;
+            margin: 15px 0;
+          }
+
+          .print-billing-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+          }
+
+          .billing-left {
+            display: flex;
+            align-items: flex-start;
+          }
+
+          .billing-right {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+          }
+
+          .print-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-top: 60px;
+            page-break-inside: avoid;
+          }
+
+          .print-signature {
+            text-align: center;
+          }
+
+          .signature-line {
+            width: 180px;
+            border-top: 1px solid black;
+            margin-bottom: 5px;
+          }
+
+          .print-signature p {
+            margin: 0;
+            font-size: 12px;
+          }
+
+          .print-date {
+            font-size: 12px;
+          }
+
+          @media print {
+            body {
+              -webkit-print-color-adjust: exact;
+              print-color-adjust: exact;
+            }
+          }
+        </style>
+      </head>
+
+      <body>
+
+        ${printContent.outerHTML}
+
+      </body>
+    </html>
+  `);
+
+  printWindow.document.close();
+
+  printWindow.onload = () => {
+    setTimeout(() => {
+      printWindow.focus();
+      printWindow.print();
+
+      setTimeout(() => {
+        printWindow.close();
+      }, 500);
+    }, 500);
+  };
+};
 
   return (
     <div className="modal-overlay print-modal-overlay">
@@ -52,7 +232,7 @@ const PrintPreview = ({ selectedPatient, handlePrint, setShowPrintModal }) => {
                   <div className="print-item"><strong>Age/Gender:</strong> {selectedPatient.age || '-'} / {selectedPatient.gender || '-'}</div>
 
                   <div className="print-item"><strong>Relative Name:</strong> {selectedPatient.husband_name || '-'}</div>
-                  <div className="print-item"><strong>Bill Date:</strong> {formatDateIndian(selectedPatient.date_of_admission) || '-'}</div>
+                  <div className="print-item"><strong>Bill Date:</strong> {selectedPatient.date_of_admission || '-'}</div>
 
                   <div className="print-item"><strong>Phone No:</strong> {selectedPatient.phone || '-'}</div>
                   <div className="print-item"><strong>Reg No:</strong> {selectedPatient.reg_no || '-'}</div>
@@ -74,13 +254,13 @@ const PrintPreview = ({ selectedPatient, handlePrint, setShowPrintModal }) => {
                 <hr className="print-divider" />
                 <div className="print-billing-grid">
                   <div className="billing-left">
-                    <div className="print-item"><strong>Package:</strong> {formatINR(selectedPatient.package_amount || 0)}</div>
+                    <div className="print-item"><strong>Package:</strong> ₹{selectedPatient.package_amount || 0}</div>
                   </div>
                   <div className="billing-right">
-                      <div className="print-item"><strong>Advance Payment:</strong> {formatINR(selectedPatient.advance_payment || 0)}</div>
-                      <div className="print-item"><strong>Remaining Balance:</strong> {formatINR(remainingBalance || 0)}</div>
-                      <div className="print-item"><strong>Discount:</strong> {formatINR(selectedPatient.discount || 0)}</div>
-                      <div className="print-item"><strong>Total Amount:</strong> {formatINR(totalAmount || 0)}</div>
+                    <div className="print-item"><strong>Advance Payment:</strong> ₹{selectedPatient.advance_payment || 0}</div>
+                    <div className="print-item"><strong>Remaining Balance:</strong> ₹{remainingBalance}</div>
+                    <div className="print-item"><strong>Discount:</strong> ₹{selectedPatient.discount || 0}</div>
+                    <div className="print-item"><strong>Total Amount:</strong> ₹{totalAmount}</div>
                   </div>
                 </div>
               </div>
@@ -92,7 +272,7 @@ const PrintPreview = ({ selectedPatient, handlePrint, setShowPrintModal }) => {
                 <p>Authorized Signature</p>
               </div>
               <div className="print-date">
-                Printed on: {formatDateIndian(new Date())}
+                Printed on: {new Date().toLocaleDateString()}
               </div>
             </div>
           </div>
