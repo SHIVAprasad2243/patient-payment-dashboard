@@ -25,14 +25,6 @@ const Sidebar = ({ activeTab, setActiveTab, collapsed, setCollapsed }) => {
           <span className="sidebar-icon">📊</span>
           {!collapsed && <span className="sidebar-label">Dashboard</span>}
         </button>
-        <button
-          className={`sidebar-link ${activeTab === 'transfer' ? 'active' : ''}`}
-          type="button"
-          onClick={() => setActiveTab('transfer')}
-        >
-          <span className="sidebar-icon">🔄</span>
-          {!collapsed && <span className="sidebar-label">Transfer</span>}
-        </button>
       </nav>
     </aside>
   );

@@ -8,6 +8,7 @@ import Navbar from './components/Navbar';
 import Sidebar from './components/Sidebar';
 import Dashboard from './components/Dashboard';
 import TransferManagement from './components/TransferManagement';
+import PatientTransactionPage from './components/PatientTransactionPage';
 
 const emptyPatientForm = {
   first_name: '',
@@ -129,6 +130,7 @@ function App() {
   const [selectedPatientIds, setSelectedPatientIds] = useState([]);
   const [activeTab, setActiveTab] = useState('patients');
   const [pendingDeletePatient, setPendingDeletePatient] = useState(null);
+  const [currentPath, setCurrentPath] = useState(`${window.location.pathname}${window.location.search}` || '/');
 
 
 
@@ -283,7 +285,6 @@ function App() {
     const op = String(patientForm.operation_type || '').toLowerCase();
 
     const isSurgery = op === 'a' || /surgery/i.test(op) || op === 'surgery-ip';
-    const isGeneral = /general/i.test(op) || op === 'general';
 
     const requiredFields = [
       patientForm.first_name,
@@ -764,6 +765,32 @@ const handlePrint = () => {
     selectedPatientIds.includes(patient.id)
   );
 
+  const navigateToPath = (path) => {
+    window.history.pushState({}, '', path);
+    setCurrentPath(`${window.location.pathname}${window.location.search}` || '/');
+  };
+
+  const isPaymentHistoryRoute = /^\/patient\/.*\/transaction(?:\?.*)?$/.test(currentPath);
+
+  const transactionPatientName = (() => {
+    if (!isPaymentHistoryRoute) return '';
+    const match = currentPath.match(/^\/patient\/(.+)\/transaction(?:\?.*)?$/);
+    if (!match) return '';
+    return decodeURIComponent(match[1]).replace(/\+/g, ' ');
+  })();
+
+  const transactionPatientId = (() => {
+    if (!isPaymentHistoryRoute) return '';
+    const params = new URLSearchParams(currentPath.split('?')[1] || '');
+    return params.get('patientId') || '';
+  })();
+
+  const transactionBillNo = (() => {
+    if (!isPaymentHistoryRoute) return '';
+    const params = new URLSearchParams(currentPath.split('?')[1] || '');
+    return params.get('billNo') || '';
+  })();
+
   const handlePatientSelectionToggle = (patientId) => {
     setSelectedPatientIds((prev) =>
       prev.includes(patientId)
@@ -803,10 +830,13 @@ const handlePrint = () => {
           setCollapsed={setSidebarCollapsed}
         />
 
-        {activeTab === 'transfer' ? (
-          <section className="dashboard-page">
-            <TransferManagement userRole={userRole} />
-          </section>
+        {isPaymentHistoryRoute ? (
+          <PatientTransactionPage
+            patientName={transactionPatientName}
+            patientId={transactionPatientId}
+            billNo={transactionBillNo}
+            onBack={() => navigateToPath('/')}
+          />
         ) : (
           <Dashboard
             searchQuery={searchQuery}
@@ -848,6 +878,7 @@ const handlePrint = () => {
             handlePatientSelectionToggle={handlePatientSelectionToggle}
             handleSelectAllPatients={handleSelectAllPatients}
             selectedPatients={selectedPatients}
+            onViewTransaction={navigateToPath}
           />
         )}
       </div>

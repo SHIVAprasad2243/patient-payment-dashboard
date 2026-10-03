@@ -1,9 +1,10 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import PatientTable from './PatientTable';
 import PatientModal from './PatientModal';
 import PrintPreview from './PrintPreview';
+import PatientTransactionModal from './PatientTransactionModal';
 
 describe('Payment calculations and Form fields', () => {
   const mockPatient = {
@@ -131,6 +132,40 @@ describe('Payment calculations and Form fields', () => {
 
     expect(screen.getByText('₹10000')).toBeInTheDocument();
     expect(screen.queryByText('₹15000')).not.toBeInTheDocument();
+  });
+
+  test('PatientTransactionModal auto-fills patient name, bill number and payment fields', () => {
+    const patient = {
+      id: 2,
+      first_name: 'Asha',
+      last_name: 'Patel',
+      bill_no: 'B-204',
+      phone: '+91 9876543210',
+      husband_name: 'Ravi Patel',
+      total_amount: 5000,
+    };
+
+    render(
+      <PatientTransactionModal
+        patient={patient}
+        onClose={jest.fn()}
+        onSave={jest.fn()}
+      />
+    );
+
+    expect(screen.getByDisplayValue('Asha Patel')).toBeInTheDocument();
+    expect(screen.getByDisplayValue('B-204')).toBeInTheDocument();
+    expect(screen.getByLabelText('Payment Date')).toBeInTheDocument();
+
+    expect(screen.getByLabelText('Amount')).toHaveValue(null);
+    expect(screen.getByLabelText('Sent By')).toHaveValue('');
+    expect(screen.getByLabelText('Mobile Number')).toHaveValue('');
+    expect(screen.getByLabelText('Payment Mode')).toBeInTheDocument();
+    expect(screen.getByLabelText('Collected By')).toHaveValue('');
+    expect(screen.getByLabelText('Remark')).toHaveValue('');
+
+    fireEvent.change(screen.getByLabelText('Amount'), { target: { value: '2500' } });
+    expect(screen.getByDisplayValue('2500')).toBeInTheDocument();
   });
 
   test('PatientModal shows Operation Type dropdown and toggles Reg No visibility', () => {

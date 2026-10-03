@@ -48,6 +48,7 @@ const Dashboard = ({
   handlePatientSelectionToggle,
   handleSelectAllPatients,
   selectedPatients,
+  onViewTransaction,
 }) => {
 
   return (
@@ -131,6 +132,7 @@ const Dashboard = ({
         selectedPatientIds={selectedPatientIds}
         handlePatientSelectionToggle={handlePatientSelectionToggle}
         handleSelectAllPatients={handleSelectAllPatients}
+        onViewTransaction={onViewTransaction}
       />
 
       {pendingDeletePatient && (

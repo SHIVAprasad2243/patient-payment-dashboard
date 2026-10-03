@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { formatINR } from '../utils/numberFormat';
 import { formatDateIndian } from '../utils/dateFormat';
+import { supabase } from '../lib/supabaseClient';
+import PatientTransactionModal from './PatientTransactionModal';
 
 const PatientTable = ({
   patientsLoading,
@@ -12,152 +14,244 @@ const PatientTable = ({
   selectedPatientIds = [],
   handlePatientSelectionToggle = () => {},
   handleSelectAllPatients = () => {},
+  onViewTransaction = () => {},
 }) => {
-    const columnCount = userRole === 'admin' ? 16 : 15; // header columns depend on role
+  const columnCount = userRole === 'admin' ? 16 : 15;
+  const [menuPatientId, setMenuPatientId] = useState(null);
+  const [showTransactionModal, setShowTransactionModal] = useState(false);
+  const [transactionPatient, setTransactionPatient] = useState(null);
 
-    
+  const handleOpenTransactionMenu = (patient) => {
+    setMenuPatientId(menuPatientId === patient.id ? null : patient.id);
+    setTransactionPatient(patient);
+  };
+
+  const handleAddTransaction = (patient) => {
+    setTransactionPatient(patient);
+    setShowTransactionModal(true);
+    setMenuPatientId(null);
+  };
+
+  const handleSaveTransaction = async (payload) => {
+    try {
+      if (!supabase) {
+        console.warn('Supabase is not configured. Payment record was not saved.');
+        setShowTransactionModal(false);
+        setTransactionPatient(null);
+        return;
+      }
+
+      const patientName = `${transactionPatient?.first_name || ''} ${transactionPatient?.last_name || ''}`.trim() || payload.patientName || '';
+
+      const paymentRecord = {
+        patient_name: patientName,
+        bill_no: payload.billNo || transactionPatient?.bill_no || '',
+        patientID: transactionPatient?.id ?? null,
+        payment_date: payload.paymentDate || new Date().toISOString().slice(0, 10),
+        amount: Number(payload.amount) || 0,
+        sent_by: payload.sentBy || '',
+        mobile_number: payload.mobileNumber || '',
+        payment_mode: payload.paymentMode || 'Cash',
+        collected_by: payload.collectedBy || '',
+        remark: payload.remark || '',
+      };
+
+      const { error } = await supabase.from('PaymentTable').insert([paymentRecord]);
+
+      if (error) {
+        throw error;
+      }
+
+      setShowTransactionModal(false);
+      setTransactionPatient(null);
+    } catch (error) {
+      console.error('Error saving payment:', error);
+      alert(error?.message || 'Failed to save payment.');
+    }
+  };
+
+  const handleViewTransactions = (patient) => {
+    const patientName = `${patient.first_name || ''} ${patient.last_name || ''}`.trim() || 'patient';
+    const query = new URLSearchParams({
+      patientId: patient.id ?? '',
+      billNo: patient.bill_no ?? '',
+    }).toString();
+
+    onViewTransaction(`/patient/${encodeURIComponent(patientName)}/transaction?${query}`);
+    setMenuPatientId(null);
+  };
 
   return (
-
-    <div className="records-table-container">
-
-      <table className="records-table">
-        <thead>
-          <tr>
-            <th className="selection-col">
-              <input
-                type="checkbox"
-                aria-label="Select all visible patients"
-                checked={filteredPatients.length > 0 && filteredPatients.every((patient) => selectedPatientIds.includes(patient.id))}
-                onChange={handleSelectAllPatients}
-                disabled={filteredPatients.length === 0}
-              />
-            </th>
-            <th>Patient Name</th>
-            <th>Age/Sex</th>
-            <th>Relative Name</th>
-            <th>Cell No</th>
-            <th>Admission Date</th>
-            <th>Diagnosis</th>
-            <th>Surgeon</th>
-            <th>Anaesthetist</th>
-            <th>Assistant</th>
-            {userRole === 'admin' && <th>Charge</th>}
-            <th>Remaining Balance</th>
-            <th>Total Amount</th>
-            <th>Payment status</th>
-            <th>Payment method</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-
-        <tbody>
-          {patientsLoading && filteredPatients.length === 0 ? (
-
+    <>
+      <div className="records-table-container">
+        <table className="records-table">
+          <thead>
             <tr>
-              <td colSpan={columnCount} className="table-empty-state">
-                Loading patient details...
-              </td>
+              <th className="selection-col">
+                <input
+                  type="checkbox"
+                  aria-label="Select all visible patients"
+                  checked={filteredPatients.length > 0 && filteredPatients.every((patient) => selectedPatientIds.includes(patient.id))}
+                  onChange={handleSelectAllPatients}
+                  disabled={filteredPatients.length === 0}
+                />
+              </th>
+              <th>Patient Name</th>
+              <th>Age/Sex</th>
+              <th>Relative Name</th>
+              <th>Cell No</th>
+              <th>Admission Date</th>
+              <th>Diagnosis</th>
+              <th>Surgeon</th>
+              <th>Anaesthetist</th>
+              <th>Assistant</th>
+              {userRole === 'admin' && <th>Charge</th>}
+              <th>Remaining Balance</th>
+              <th>Total Amount</th>
+              <th>Payment status</th>
+              <th>Payment method</th>
+              <th>Actions</th>
             </tr>
-          ) : filteredPatients.length === 0 ? (
-            <tr>
-              <td colSpan={columnCount} className="table-empty-state">
-                No records found
-              </td>
-            </tr>
-          ) : (
-            filteredPatients.map((patient) => {
+          </thead>
 
-              return (
-                <tr key={patient.id}>
-                  <td className="selection-col">
-                    <input
-                      type="checkbox"
-                      checked={selectedPatientIds.includes(patient.id)}
-                      onChange={() => handlePatientSelectionToggle(patient.id)}
-                      aria-label={`Select ${patient.first_name || 'patient'} ${patient.last_name || ''}`}
-                    />
-                  </td>
-                  <td className="font-bold">
-                    <div className="table-patient-info">
-                      {patient.photo_url ? (
-                        <img src={patient.photo_url} alt="Avatar" className="table-avatar" />
-                      ) : (
-                        <div className="table-avatar-placeholder">
-                          {patient.first_name ? patient.first_name[0] : 'P'}
-                        </div>
-                      )}
-                      <span>{patient.first_name} {patient.last_name}</span>
-                    </div>
-                  </td>
-                  <td>
-                    {patient.age || '-'} / {patient.gender ? patient.gender.charAt(0) : '-'}
-                  </td>
-                  <td>{patient.husband_name || '-'}</td>
-                  <td>{patient.phone || '-'}</td>
-                  <td>{formatDateIndian(patient.date_of_admission) || '-'}</td>
-                  <td>
-                    <div className="diagnosis-cell" title={patient.diagnosis}>
-                      {patient.diagnosis || '-'}
-                    </div>
-                  </td>
-                  <td>{patient.surgeon_name || '-'}</td>
-                  <td>{patient.anaesthetist_name || '-'}</td>
-                  <td>{patient.assistant_name || '-'}</td>
-                  
+          <tbody>
+            {patientsLoading && filteredPatients.length === 0 ? (
+              <tr>
+                <td colSpan={columnCount} className="table-empty-state">
+                  Loading patient details...
+                </td>
+              </tr>
+            ) : filteredPatients.length === 0 ? (
+              <tr>
+                <td colSpan={columnCount} className="table-empty-state">
+                  No records found
+                </td>
+              </tr>
+            ) : (
+              filteredPatients.map((patient) => {
+                return (
+                  <tr key={patient.id}>
+                    <td className="selection-col">
+                      <input
+                        type="checkbox"
+                        checked={selectedPatientIds.includes(patient.id)}
+                        onChange={() => handlePatientSelectionToggle(patient.id)}
+                        aria-label={`Select ${patient.first_name || 'patient'} ${patient.last_name || ''}`}
+                      />
+                    </td>
+                    <td className="font-bold">
+                      <div className="table-patient-info">
+                        {patient.photo_url ? (
+                          <img src={patient.photo_url} alt="Avatar" className="table-avatar" />
+                        ) : (
+                          <div className="table-avatar-placeholder">
+                            {patient.first_name ? patient.first_name[0] : 'P'}
+                          </div>
+                        )}
+                        <span>{patient.first_name} {patient.last_name}</span>
+                      </div>
+                    </td>
+                    <td>
+                      {patient.age || '-'} / {patient.gender ? patient.gender.charAt(0) : '-'}
+                    </td>
+                    <td>{patient.husband_name || '-'}</td>
+                    <td>{patient.phone || '-'}</td>
+                    <td>{formatDateIndian(patient.date_of_admission) || '-'}</td>
+                    <td>
+                      <div className="diagnosis-cell" title={patient.diagnosis}>
+                        {patient.diagnosis || '-'}
+                      </div>
+                    </td>
+                    <td>{patient.surgeon_name || '-'}</td>
+                    <td>{patient.anaesthetist_name || '-'}</td>
+                    <td>{patient.assistant_name || '-'}</td>
+
                     {userRole === 'admin' && (
                       <td>{patient.charge ? formatINR(patient.charge) : formatINR(0)}</td>
                     )}
-                  <td>{formatINR(patient.remaining_amount || 0)}</td>
-                  <td>{formatINR(patient.total_amount || 0)}</td>
-                  <td>
-                    <span
-                      className={
-                        patient.payment_status === 'Fully Paid'
-                          ? 'status-badge fully-paid'
-                          : 'status-badge due'
-                      }
-                    >
-                      {patient.payment_status || 'Due'}
-                    </span>
-                  </td>
-                  <td>{patient.cash_method || 'Not Selected'}</td>
-                  <td>
-                    <div className="table-actions">
-                      <button
-                        className="text-button print-btn"
-                        onClick={() => handlePrintClick(patient)}
-                        title="Print Preview"
+                    <td>{formatINR(patient.remaining_amount || 0)}</td>
+                    <td>{formatINR(patient.total_amount || 0)}</td>
+                    <td>
+                      <span
+                        className={
+                          patient.payment_status === 'Fully Paid'
+                            ? 'status-badge fully-paid'
+                            : 'status-badge due'
+                        }
                       >
-                        🖨️
-                      </button>
-                      <button
-                        className="text-button edit-btn"
-                        onClick={() => handleEditPatient(patient)}
-                        title="Edit"
-                      >
-                        ✎
-                      </button>
-                      {userRole === 'admin' && (
+                        {patient.payment_status || 'Due'}
+                      </span>
+                    </td>
+                    <td>{patient.cash_method || 'Not Selected'}</td>
+                    <td className="table-action-cell">
+                      <div className="table-actions">
+                        <div className="action-menu-wrapper">
+                          <button
+                            className="text-button action-menu-btn"
+                            onClick={() => handleOpenTransactionMenu(patient)}
+                            title="More actions"
+                            aria-label="More actions"
+                          >
+                            ⋮
+                          </button>
+
+                          {menuPatientId === patient.id && (
+                            <div className="action-menu">
+                              <button type="button" onClick={() => handleAddTransaction(patient)}>
+                                Add Payment
+                              </button>
+                              <button type="button" onClick={() => handleViewTransactions(patient)}>
+                                View Payment
+                              </button>
+                            </div>
+                          )}
+                        </div>
+
                         <button
-                          className="text-button delete-btn"
-                          onClick={() => handleDeletePatient(patient)}
-                          title="Delete"
+                          className="text-button print-btn"
+                          onClick={() => handlePrintClick(patient)}
+                          title="Print Preview"
                         >
-                          🗑
+                          🖨️
                         </button>
-                      )}
-                    </div>
-                  </td>
-                </tr>
-              );
+                        <button
+                          className="text-button edit-btn"
+                          onClick={() => handleEditPatient(patient)}
+                          title="Edit"
+                        >
+                          ✎
+                        </button>
+                        {userRole === 'admin' && (
+                          <button
+                            className="text-button delete-btn"
+                            onClick={() => handleDeletePatient(patient)}
+                            title="Delete"
+                          >
+                            🗑
+                          </button>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                );
               })
             )}
           </tbody>
         </table>
       </div>
 
-    );
+      {showTransactionModal && transactionPatient && (
+        <PatientTransactionModal
+          patient={transactionPatient}
+          onClose={() => {
+            setShowTransactionModal(false);
+            setTransactionPatient(null);
+          }}
+          onSave={handleSaveTransaction}
+        />
+      )}
+    </>
+  );
 };
 
 export default PatientTable;
