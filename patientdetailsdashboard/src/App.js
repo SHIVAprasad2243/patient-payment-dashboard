@@ -123,7 +123,7 @@ function App() {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [showProfileMenu, setShowProfileMenu] = useState(false);
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(true);
   const [showPatientModal, setShowPatientModal] = useState(false);
   const [showPrintModal, setShowPrintModal] = useState(false);
   const [selectedPatient, setSelectedPatient] = useState(null);
