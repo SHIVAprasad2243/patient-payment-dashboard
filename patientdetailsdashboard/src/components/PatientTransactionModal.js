@@ -38,7 +38,7 @@ const PatientTransactionModal = ({ patient, onClose, onSave }) => {
     event.preventDefault();
 
     const normalizedMobile = normalizeMobileNumber(formData.mobileNumber);
-    if (normalizedMobile && !/^\+91\d{10}$/.test(normalizedMobile)) {
+    if (normalizedMobile && !/^\+91\s?\d{10}$/.test(normalizedMobile)) {
       alert('Mobile number must start with +91 and contain 10 digits after it.');
       return;
     }

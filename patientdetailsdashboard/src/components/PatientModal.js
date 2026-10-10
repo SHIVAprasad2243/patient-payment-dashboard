@@ -1,6 +1,6 @@
 import React from 'react';
 import { formatINR, formatINRNoSymbol } from '../utils/numberFormat';
-import { parseLocalDate, toLocalDateInputValue } from '../utils/dateFormat';
+import { parseLocalDate, toLocalDateInputValue, toLocalDateTimeInputValue } from '../utils/dateFormat';
 import ReactDatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 
@@ -25,6 +25,15 @@ const PatientModal = ({
       : Object.values(fieldErrors).some(Boolean)
         ? 'Please correct the highlighted fields.'
         : '';
+
+  const shouldShowBabyFields = [
+    'LSCS Primi',
+    'LSCS G2',
+    'LSCS G2 BTC',
+    'LSCS G3',
+    'LSCS G3 BTC',
+    'Normal Vaginal Delivery',
+  ].some((value) => String(patientForm.diagnosis || '').trim().toLowerCase() === value.toLowerCase());
 
   return (
     <div className="modal-overlay">
@@ -116,7 +125,7 @@ const PatientModal = ({
                   required
                   aria-invalid={!!fieldErrors.gender}
                 >
-                  <option value="">Select Gender</option>
+                  <option value="">Select</option>
                   <option value="Male">Male</option>
                   <option value="Female">Female</option>
                   <option value="Other">Other</option>
@@ -219,7 +228,7 @@ const PatientModal = ({
             </div>
             {patientForm.operation_type !== 'B' && (
               <div className="form-row">
-                <div style={{ width: '100%' }}>
+                <div>
                   <label>IP Number</label>
                   <input
                     name="reg_no"
@@ -233,6 +242,19 @@ const PatientModal = ({
                   {fieldErrors.reg_no && (
                     <div className="field-error-text">{fieldErrors.reg_no}</div>
                   )}
+                </div>
+                <div>
+                  <label>Discharge Date</label>
+                  <ReactDatePicker
+                    selected={patientForm.date_of_discharge ? parseLocalDate(patientForm.date_of_discharge) : null}
+                    onChange={(date) => {
+                      const iso = date ? toLocalDateInputValue(date) : '';
+                      handlePatientChange({ target: { name: 'date_of_discharge', value: iso } });
+                    }}
+                    dateFormat="dd/MM/yyyy"
+                    placeholderText="DD/MM/YYYY"
+                    className="full-width-input"
+                  />
                 </div>
               </div>
             )}
@@ -260,18 +282,16 @@ const PatientModal = ({
             <div className="form-row">
               <div>
                 <label>Diagnosis</label>
-                <input
+                <select
                   name="diagnosis"
-                  list="diagnosis-list"
                   value={patientForm.diagnosis}
                   onChange={handlePatientChange}
-                  placeholder="Select or type diagnosis..."
-                />
-                <datalist id="diagnosis-list">
+                >
+                  <option value="">Select or type diagnosis...</option>
                   {(masterDiagnoses || []).map((d, i) => (
-                    <option key={i} value={d} />
+                    <option key={i} value={d}>{d}</option>
                   ))}
-                </datalist>
+                </select>
               </div>
               <div>
                 <label>Surgeon Name</label>
@@ -324,6 +344,56 @@ const PatientModal = ({
                 </datalist>
               </div>
             </div>
+
+            {shouldShowBabyFields && (
+              <div className="form-section" style={{ marginTop: '16px', background: '#fff' }}>
+                <h4 className="section-title" style={{ marginBottom: '12px' }}>Baby Details</h4>
+                <div className="form-row">
+                  <div>
+                    <label>Date of birth</label>
+                    <ReactDatePicker
+                      selected={patientForm.baby_date_of_birth ? parseLocalDate(patientForm.baby_date_of_birth) : null}
+                      onChange={(date) => {
+                        const iso = date ? toLocalDateTimeInputValue(date) : '';
+                        handlePatientChange({ target: { name: 'baby_date_of_birth', value: iso } });
+                      }}
+                      dateFormat="dd/MM/yyyy h:mm aa"
+                      timeFormat="HH:mm"
+                      showTimeSelect
+                      timeIntervals={15}
+                      placeholderText="DD/MM/YYYY HH:mm"
+                      className="full-width-input"
+                    />
+                  </div>
+                  <div>
+                    <label>Baby sex</label>
+                    <select
+                      name="baby_gender"
+                      value={patientForm.baby_gender || ''}
+                      onChange={handlePatientChange}
+                    >
+                      <option value="">Select sex</option>
+                      <option value="Male">Male</option>
+                      <option value="Female">Female</option>
+                      <option value="Other">Other</option>
+                    </select>
+                  </div>
+                </div>
+                <div className="form-row">
+                  <div style={{ width: '100%' }}>
+                    <label>weight</label>
+                    <input
+                      name="baby_weight"
+                      type="number"
+                      step="0.1"
+                      value={patientForm.baby_weight}
+                      onChange={handlePatientChange}
+                      placeholder="Weight in kg"
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
           <div className="form-section">
             <h3 className="section-title">Pt. is Conscious/Coherent</h3>

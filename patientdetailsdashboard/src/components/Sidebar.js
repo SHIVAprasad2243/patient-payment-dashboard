@@ -1,6 +1,8 @@
 import React from 'react';
 
-const Sidebar = ({ activeTab, setActiveTab, collapsed, setCollapsed, onNavigate = () => {} }) => {
+const Sidebar = ({ activeTab, setActiveTab, collapsed, setCollapsed, onNavigate = () => {}, userRole }) => {
+  const isAdmin = userRole === 'admin';
+
   return (
     <aside className={`sidebar ${collapsed ? 'collapsed' : ''}`}>
       <div className="sidebar-header">
@@ -30,18 +32,20 @@ const Sidebar = ({ activeTab, setActiveTab, collapsed, setCollapsed, onNavigate 
           {!collapsed && <span className="sidebar-label">Dashboard</span>}
         </button>
 
-        <button
-          className={`sidebar-link ${activeTab === 'payment-history' ? 'active' : ''}`}
-          type="button"
-          onClick={() => {
-            setActiveTab('payment-history');
-            onNavigate('/payment-history');
-          }}
-          aria-label="Payment History"
-        >
-          <span className="sidebar-icon">💳</span>
-          {!collapsed && <span className="sidebar-label">Payment History</span>}
-        </button>
+        {isAdmin && (
+          <button
+            className={`sidebar-link ${activeTab === 'payment-history' ? 'active' : ''}`}
+            type="button"
+            onClick={() => {
+              setActiveTab('payment-history');
+              onNavigate('/payment-history');
+            }}
+            aria-label="Payment History"
+          >
+            <span className="sidebar-icon">💳</span>
+            {!collapsed && <span className="sidebar-label">Payment History</span>}
+          </button>
+        )}
       </nav>
     </aside>
   );

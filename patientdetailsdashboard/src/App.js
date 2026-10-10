@@ -24,7 +24,11 @@ const emptyPatientForm = {
   alternative_number: '',
   address: '',
   date_of_admission: '',
+  date_of_discharge: '',
   diagnosis: '',
+  baby_date_of_birth: '',
+  baby_gender: '',
+  baby_weight: '',
   surgeon_name: '',
   anaesthetist_name: '',
   assistant_name: '',
@@ -115,6 +119,7 @@ function App() {
     gender: '',
     cell_no: '',
     date_of_admission: '',
+    // date_of_discharge: '',
     reg_no: '',
     bill_no: '',
   });
@@ -150,7 +155,8 @@ function App() {
     'LSCS G2 BTC',
     'LSCS G3',
     'LSCS G3 BTC',
-    'Tubectomy'
+     'Normal Vaginal Delivery',
+    'Tubectomy',   
   ].sort());
 
   const [masterStaff] = useState({
@@ -396,6 +402,7 @@ function App() {
       gender: '',
       cell_no: '',
       date_of_admission: '',
+      date_of_discharge: '',
       reg_no: '',
       bill_no: '',
     });
@@ -504,7 +511,11 @@ function App() {
       alternative_number: patientForm.alternative_number,
       address: patientForm.address,
       date_of_admission: patientForm.date_of_admission || null,
+      date_of_discharge: patientForm.date_of_discharge || null,
       diagnosis: patientForm.diagnosis,
+      baby_date_of_birth: patientForm.baby_date_of_birth || null,
+      baby_gender: patientForm.baby_gender || '',
+      baby_weight: patientForm.baby_weight || null,
       surgeon_name: patientForm.surgeon_name,
       anaesthetist_name: patientForm.anaesthetist_name,
       assistant_name: patientForm.assistant_name,
@@ -604,7 +615,11 @@ function App() {
       alternative_number: patient.alternative_number || '',
       address: patient.address || '',
       date_of_admission: patient.date_of_admission || '',
+      date_of_discharge: patient.date_of_discharge || '',
       diagnosis: patient.diagnosis || '',
+      baby_date_of_birth: patient.baby_date_of_birth ?? patient.baby_birth_date ?? '',
+      baby_gender: patient.baby_gender || '',
+      baby_weight: patient.baby_weight || '',
       surgeon_name: patient.surgeon_name || '',
       anaesthetist_name: patient.anaesthetist_name || '',
       assistant_name: patient.assistant_name || '',
@@ -831,11 +846,12 @@ const handlePrint = () => {
           collapsed={sidebarCollapsed}
           setCollapsed={setSidebarCollapsed}
           onNavigate={navigateToPath}
+          userRole={userRole}
         />
 
-        {isGlobalPaymentHistoryRoute ? (
+        {userRole === 'admin' && isGlobalPaymentHistoryRoute ? (
           <PaymentHistoryPage onBack={() => navigateToPath('/')} />
-        ) : isPaymentHistoryRoute ? (
+        ) : userRole === 'admin' && isPaymentHistoryRoute ? (
           <PatientTransactionPage
             patientName={transactionPatientName}
             patientId={transactionPatientId}

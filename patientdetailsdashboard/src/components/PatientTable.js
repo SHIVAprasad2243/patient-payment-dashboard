@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { formatINR } from '../utils/numberFormat';
-import { formatDateIndian } from '../utils/dateFormat';
+import { formatDateIndian, formatDateTimeIndian } from '../utils/dateFormat';
 import { supabase } from '../lib/supabaseClient';
 import PatientTransactionModal from './PatientTransactionModal';
 
@@ -16,11 +16,12 @@ const PatientTable = ({
   handleSelectAllPatients = () => {},
   onViewTransaction = () => {},
 }) => {
-  const columnCount = userRole === 'admin' ? 16 : 15;
+  const columnCount = userRole === 'admin' ? 19 : 18;
   const [menuPatientId, setMenuPatientId] = useState(null);
   const [showTransactionModal, setShowTransactionModal] = useState(false);
   const [transactionPatient, setTransactionPatient] = useState(null);
   const [toastMessage, setToastMessage] = useState('');
+  const actionMenuRef = useRef(null);
 
   useEffect(() => {
     if (!toastMessage) {
@@ -33,6 +34,25 @@ const PatientTable = ({
 
     return () => window.clearTimeout(timeoutId);
   }, [toastMessage]);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (!actionMenuRef.current) {
+        return;
+      }
+
+      const clickedInsideMenu = actionMenuRef.current.contains(event.target);
+      if (!clickedInsideMenu) {
+        setMenuPatientId(null);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   const handleOpenTransactionMenu = (patient) => {
     setMenuPatientId(menuPatientId === patient.id ? null : patient.id);
@@ -55,19 +75,16 @@ const PatientTable = ({
       }
 
       const patientName = `${transactionPatient?.first_name || ''} ${transactionPatient?.last_name || ''}`.trim() || payload.patientName || '';
-
-      const generatedPrimaryKey = typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : `payment-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+      const sanitizedMobile = String(payload.mobileNumber || '').replace(/\D/g, '').slice(0, 12);
 
       const paymentRecord = {
-        // primaryKey: generatedPrimaryKey,
-
         patient_name: patientName,
         bill_no: payload.billNo || transactionPatient?.bill_no || '',
         patientID: transactionPatient?.id ?? null,
         payment_date: payload.paymentDate || new Date().toISOString().slice(0, 10),
         amount: Number(payload.amount) || 0,
         sent_by: payload.sentBy || '',
-        mobile_number: payload.mobileNumber || '',
+        mobile_number: sanitizedMobile,
         payment_mode: payload.paymentMode || 'Cash',
         collected_by: payload.collectedBy || '',
         remark: payload.remark || '',
@@ -125,7 +142,11 @@ const PatientTable = ({
               <th>Relative Name</th>
               <th>Cell No</th>
               <th>Admission Date</th>
+              <th>Discharge  Date</th>
               <th>Diagnosis</th>
+              <th>Baby Birth Date</th>
+              <th>Baby Gender</th>
+              <th>Baby Weight</th>
               <th>Surgeon</th>
               <th>Anaesthetist</th>
               <th>Assistant</th>
@@ -181,11 +202,15 @@ const PatientTable = ({
                     <td>{patient.husband_name || '-'}</td>
                     <td>{patient.phone || '-'}</td>
                     <td>{formatDateIndian(patient.date_of_admission) || '-'}</td>
+                    <td>{formatDateIndian(patient.date_of_discharge) || '-'}</td>
                     <td>
                       <div className="diagnosis-cell" title={patient.diagnosis}>
                         {patient.diagnosis || '-'}
                       </div>
                     </td>
+                    <td>{formatDateTimeIndian(patient.baby_date_of_birth ?? patient.baby_birth_date) || '-'}</td>
+                    <td>{patient.baby_gender || '-'}</td>
+                    <td>{patient.baby_weight ? `${patient.baby_weight} kg` : '-'}</td>
                     <td>{patient.surgeon_name || '-'}</td>
                     <td>{patient.anaesthetist_name || '-'}</td>
                     <td>{patient.assistant_name || '-'}</td>
@@ -209,27 +234,32 @@ const PatientTable = ({
                     <td>{patient.cash_method || 'Not Selected'}</td>
                     <td className="table-action-cell">
                       <div className="table-actions">
-                        <div className="action-menu-wrapper">
-                          <button
-                            className="text-button action-menu-btn"
-                            onClick={() => handleOpenTransactionMenu(patient)}
-                            title="More actions"
-                            aria-label="More actions"
+                        {userRole === 'admin' && (
+                          <div
+                            className="action-menu-wrapper"
+                            ref={menuPatientId === patient.id ? actionMenuRef : null}
                           >
-                            ⋮
-                          </button>
+                            <button
+                              className="text-button action-menu-btn"
+                              onClick={() => handleOpenTransactionMenu(patient)}
+                              title="More actions"
+                              aria-label="More actions"
+                            >
+                              ⋮
+                            </button>
 
-                          {menuPatientId === patient.id && (
-                            <div className="action-menu">
-                              <button type="button" onClick={() => handleAddTransaction(patient)}>
-                                Add Payment
-                              </button>
-                              <button type="button" onClick={() => handleViewTransactions(patient)}>
-                                View Payment
-                              </button>
-                            </div>
-                          )}
-                        </div>
+                            {menuPatientId === patient.id && (
+                              <div className="action-menu">
+                                <button type="button" onClick={() => handleAddTransaction(patient)}>
+                                  Add Payment
+                                </button>
+                                <button type="button" onClick={() => handleViewTransactions(patient)}>
+                                  View Payment
+                                </button>
+                              </div>
+                            )}
+                          </div>
+                        )}
 
                         <button
                           className="text-button print-btn"

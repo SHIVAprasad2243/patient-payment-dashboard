@@ -90,7 +90,7 @@ const PatientTransactionPage = ({ patientName = '', patientId = '', billNo = '',
     setFormData({
       payment_date: selectedTransaction.payment_date || '',
       sent_by: selectedTransaction.sent_by || '',
-      mobile_number: selectedTransaction.mobile_number || '',
+      mobile_number: normalizeMobileNumber(selectedTransaction.mobile_number || ''),
       payment_mode: selectedTransaction.payment_mode || 'Cash',
       collected_by: selectedTransaction.collected_by || '',
       amount: Number(selectedTransaction.amount || 0),
@@ -100,10 +100,12 @@ const PatientTransactionPage = ({ patientName = '', patientId = '', billNo = '',
   }, [selectedTransaction]);
 
   const normalizeMobileNumber = (value = '') => {
-    const rawDigits = value.replace(/\D/g, '');
+    const rawDigits = String(value || '').replace(/\D/g, '');
     const digits = rawDigits.replace(/^91/, '').slice(0, 10);
     return digits ? `+91 ${digits}` : '';
   };
+
+  const sanitizeMobileNumberForDb = (value = '') => String(value || '').replace(/\D/g, '').slice(0, 12);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -127,7 +129,7 @@ const PatientTransactionPage = ({ patientName = '', patientId = '', billNo = '',
     const payload = {
       payment_date: formData.payment_date,
       sent_by: formData.sent_by,
-      mobile_number: normalizedMobile,
+      mobile_number: sanitizeMobileNumberForDb(normalizedMobile),
       payment_mode: formData.payment_mode,
       collected_by: formData.collected_by,
       amount: Number(formData.amount || 0),

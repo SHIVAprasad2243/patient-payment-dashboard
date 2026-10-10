@@ -19,11 +19,28 @@ const getPaymentKeyField = (transaction = {}) => {
   return 'id';
 };
 
+const getPaymentSelectionKey = (transaction = {}) => {
+  const recordKey = getPaymentRecordKey(transaction);
+  if (recordKey !== null && recordKey !== undefined) {
+    return String(recordKey);
+  }
+
+  return `${transaction.patient_name || 'unknown'}-${transaction.bill_no || 'unknown'}-${transaction.payment_date || ''}-${transaction.amount || 0}`;
+};
+
+const normalizeMobileDisplay = (value = '') => {
+  const digits = String(value || '').replace(/\D/g, '').slice(-10);
+  return digits ? `+91 ${digits}` : '';
+};
+
+const sanitizeMobileNumberForDb = (value = '') => String(value || '').replace(/\D/g, '').slice(0, 12);
+
 const PaymentHistoryPage = ({ initialTransactions = [], onBack }) => {
   const [transactions, setTransactions] = useState(initialTransactions);
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(!initialTransactions.length);
   const [selectedTransactionId, setSelectedTransactionId] = useState(null);
+  const [selectedPaymentKeys, setSelectedPaymentKeys] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
     payment_date: '',
@@ -94,6 +111,7 @@ const PaymentHistoryPage = ({ initialTransactions = [], onBack }) => {
   }, [transactions, searchQuery]);
 
   const selectedTransaction = transactions.find((transaction) => getPaymentRecordKey(transaction) === selectedTransactionId) || null;
+  const selectedCount = selectedPaymentKeys.length;
 
   useEffect(() => {
     if (!selectedTransaction) {
@@ -112,7 +130,7 @@ const PaymentHistoryPage = ({ initialTransactions = [], onBack }) => {
     setFormData({
       payment_date: selectedTransaction.payment_date || '',
       sent_by: selectedTransaction.sent_by || '',
-      mobile_number: selectedTransaction.mobile_number || '',
+      mobile_number: normalizeMobileDisplay(selectedTransaction.mobile_number || ''),
       payment_mode: selectedTransaction.payment_mode || 'Cash',
       collected_by: selectedTransaction.collected_by || '',
       amount: Number(selectedTransaction.amount || 0),
@@ -125,8 +143,75 @@ const PaymentHistoryPage = ({ initialTransactions = [], onBack }) => {
     const { name, value } = event.target;
     setFormData((currentForm) => ({
       ...currentForm,
-      [name]: name === 'amount' ? Number(value || 0) : value,
+      [name]: name === 'amount' ? Number(value || 0) : name === 'mobile_number' ? normalizeMobileDisplay(value) : value,
     }));
+  };
+
+  const togglePaymentSelection = (transaction) => {
+    const selectionKey = getPaymentSelectionKey(transaction);
+    setSelectedPaymentKeys((currentKeys) => {
+      if (currentKeys.includes(selectionKey)) {
+        return currentKeys.filter((key) => key !== selectionKey);
+      }
+      return [...currentKeys, selectionKey];
+    });
+  };
+
+  const toggleSelectAllPayments = () => {
+    const visibleKeys = filteredTransactions.map((transaction) => getPaymentSelectionKey(transaction));
+    const allVisibleSelected = visibleKeys.length > 0 && visibleKeys.every((key) => selectedPaymentKeys.includes(key));
+
+    if (allVisibleSelected) {
+      setSelectedPaymentKeys((currentKeys) => currentKeys.filter((key) => !visibleKeys.includes(key)));
+      return;
+    }
+
+    setSelectedPaymentKeys((currentKeys) => [...new Set([...currentKeys, ...visibleKeys])]);
+  };
+
+  const handleDownloadSelected = () => {
+    if (!selectedCount) {
+      return;
+    }
+
+    const selectedRows = filteredTransactions.filter((transaction) =>
+      selectedPaymentKeys.includes(getPaymentSelectionKey(transaction))
+    );
+
+    if (!selectedRows.length) {
+      return;
+    }
+
+    const headers = ['Patient Name', 'Bill No', 'Payment Date', 'Sent By', 'Mobile Number', 'Payment Mode', 'Collected By', 'Amount', 'Remark'];
+    const rows = selectedRows.map((transaction) => [
+      transaction.patient_name || '',
+      transaction.bill_no || '',
+      transaction.payment_date || '',
+      transaction.sent_by || '',
+      normalizeMobileDisplay(transaction.mobile_number) || '',
+      transaction.payment_mode || '',
+      transaction.collected_by || '',
+      Number(transaction.amount || 0),
+      transaction.remark || '',
+    ]);
+
+    const csvRows = [headers, ...rows].map((row) =>
+      row.map((cell) => {
+        const value = String(cell ?? '').replace(/"/g, '""');
+        return `"${value}"`;
+      }).join(',')
+    );
+
+    const csvContent = csvRows.join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `selected-payments-${selectedCount}.csv`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
   };
 
   const handleSaveChanges = async () => {
@@ -134,10 +219,16 @@ const PaymentHistoryPage = ({ initialTransactions = [], onBack }) => {
       return;
     }
 
+    const normalizedMobile = normalizeMobileDisplay(formData.mobile_number);
+    if (normalizedMobile && !/^\+91\s?\d{10}$/.test(normalizedMobile)) {
+      alert('Mobile number must start with +91 and contain 10 digits after it.');
+      return;
+    }
+
     const payload = {
       payment_date: formData.payment_date,
       sent_by: formData.sent_by,
-      mobile_number: formData.mobile_number,
+      mobile_number: sanitizeMobileNumberForDb(normalizedMobile),
       payment_mode: formData.payment_mode,
       collected_by: formData.collected_by,
       amount: Number(formData.amount || 0),
@@ -240,6 +331,16 @@ const PaymentHistoryPage = ({ initialTransactions = [], onBack }) => {
             aria-label="Search payment history by patient name or bill number"
           />
         </div>
+
+        <button
+          type="button"
+          className="download-selected-button"
+          onClick={handleDownloadSelected}
+          disabled={selectedCount === 0}
+          aria-label={`Download Selected (${selectedCount})`}
+        >
+          Download Selected ({selectedCount})
+        </button>
       </div>
 
       <div className="payment-history-list-card">
@@ -251,6 +352,14 @@ const PaymentHistoryPage = ({ initialTransactions = [], onBack }) => {
           <table className="records-table">
             <thead>
               <tr>
+                <th className="select-col-header">
+                  <input
+                    type="checkbox"
+                    checked={filteredTransactions.length > 0 && filteredTransactions.every((transaction) => selectedPaymentKeys.includes(getPaymentSelectionKey(transaction)))}
+                    onChange={toggleSelectAllPayments}
+                    aria-label="Select all payment rows"
+                  />
+                </th>
                 <th>Patient Name</th>
                 <th>Bill No</th>
                 <th>Payment Date</th>
@@ -260,49 +369,33 @@ const PaymentHistoryPage = ({ initialTransactions = [], onBack }) => {
                 <th>Collected By</th>
                 <th>Amount</th>
                 <th>Remark</th>
-                <th className="action-column">Actions</th>
               </tr>
             </thead>
             <tbody>
               {filteredTransactions.map((transaction) => {
                 const recordKey = getPaymentRecordKey(transaction);
+                const selectionKey = getPaymentSelectionKey(transaction);
+                const isSelected = selectedPaymentKeys.includes(selectionKey);
 
                 return (
                   <tr key={recordKey || `${transaction.bill_no}-${transaction.payment_date}-${transaction.amount}`}>
+                    <td className="select-col">
+                      <input
+                        type="checkbox"
+                        checked={isSelected}
+                        onChange={() => togglePaymentSelection(transaction)}
+                        aria-label={`Select payment for ${transaction.patient_name || 'record'}`}
+                      />
+                    </td>
                     <td>{transaction.patient_name || '-'}</td>
                     <td>{transaction.bill_no || '-'}</td>
                     <td>{transaction.payment_date || '-'}</td>
                     <td>{transaction.sent_by || '-'}</td>
-                    <td>{transaction.mobile_number || '-'}</td>
+                    <td>{normalizeMobileDisplay(transaction.mobile_number) || '-'}</td>
                     <td>{transaction.payment_mode || '-'}</td>
                     <td>{transaction.collected_by || '-'}</td>
                     <td>{currencyFormatter.format(Number(transaction.amount || 0))}</td>
                     <td>{transaction.remark || '-'}</td>
-                    <td className="action-column">
-                      <div className="row-action-buttons">
-                        <button
-                          type="button"
-                          className="icon-button edit-icon"
-                          aria-label={`Edit payment for ${transaction.patient_name || 'record'}`}
-                          title="Edit"
-                          onClick={() => {
-                            setSelectedTransactionId(recordKey);
-                            setIsEditing(true);
-                          }}
-                        >
-                          ✎
-                        </button>
-                        <button
-                          type="button"
-                          className="icon-button delete-icon"
-                          aria-label={`Delete payment for ${transaction.patient_name || 'record'}`}
-                          title="Delete"
-                          onClick={() => handleDeleteTransaction(transaction)}
-                        >
-                          🗑
-                        </button>
-                      </div>
-                    </td>
                   </tr>
                 );
               })}
