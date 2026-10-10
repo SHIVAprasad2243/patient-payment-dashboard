@@ -16,19 +16,36 @@ const getInitialForm = (patient) => {
   };
 };
 
+const normalizeMobileNumber = (value = '') => {
+  const rawDigits = value.replace(/\D/g, '');
+  const digits = rawDigits.replace(/^91/, '').slice(0, 10);
+  return digits ? `+91 ${digits}` : '';
+};
+
 const PatientTransactionModal = ({ patient, onClose, onSave }) => {
   const [formData, setFormData] = useState(() => getInitialForm(patient));
 
   const handleChange = (event) => {
     const { name, value } = event.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+
+    setFormData((prev) => ({
+      ...prev,
+      [name]: name === 'mobileNumber' ? normalizeMobileNumber(value) : value,
+    }));
   };
 
   const handleSubmit = (event) => {
     event.preventDefault();
 
+    const normalizedMobile = normalizeMobileNumber(formData.mobileNumber);
+    if (normalizedMobile && !/^\+91\d{10}$/.test(normalizedMobile)) {
+      alert('Mobile number must start with +91 and contain 10 digits after it.');
+      return;
+    }
+
     onSave({
       ...formData,
+      mobileNumber: normalizedMobile,
       amount: Number(formData.amount) || 0,
     });
   };
@@ -114,7 +131,9 @@ const PatientTransactionModal = ({ patient, onClose, onSave }) => {
                 type="tel"
                 value={formData.mobileNumber}
                 onChange={handleChange}
-                placeholder="Mobile Number"
+                placeholder="+91XXXXXXXXXX"
+                inputMode="numeric"
+                pattern="\+91 [0-9]{10}"
               />
             </div>
 

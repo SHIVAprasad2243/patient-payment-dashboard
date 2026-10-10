@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { formatINR } from '../utils/numberFormat';
 import { formatDateIndian } from '../utils/dateFormat';
 import { supabase } from '../lib/supabaseClient';
@@ -20,6 +20,19 @@ const PatientTable = ({
   const [menuPatientId, setMenuPatientId] = useState(null);
   const [showTransactionModal, setShowTransactionModal] = useState(false);
   const [transactionPatient, setTransactionPatient] = useState(null);
+  const [toastMessage, setToastMessage] = useState('');
+
+  useEffect(() => {
+    if (!toastMessage) {
+      return undefined;
+    }
+
+    const timeoutId = window.setTimeout(() => {
+      setToastMessage('');
+    }, 3000);
+
+    return () => window.clearTimeout(timeoutId);
+  }, [toastMessage]);
 
   const handleOpenTransactionMenu = (patient) => {
     setMenuPatientId(menuPatientId === patient.id ? null : patient.id);
@@ -43,7 +56,11 @@ const PatientTable = ({
 
       const patientName = `${transactionPatient?.first_name || ''} ${transactionPatient?.last_name || ''}`.trim() || payload.patientName || '';
 
+      const generatedPrimaryKey = typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : `payment-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+
       const paymentRecord = {
+        // primaryKey: generatedPrimaryKey,
+
         patient_name: patientName,
         bill_no: payload.billNo || transactionPatient?.bill_no || '',
         patientID: transactionPatient?.id ?? null,
@@ -62,8 +79,15 @@ const PatientTable = ({
         throw error;
       }
 
+      const redirectPath = `/patient/${encodeURIComponent(patientName || 'patient')}/transaction?${new URLSearchParams({
+        patientId: transactionPatient?.id ?? '',
+        billNo: payload.billNo || transactionPatient?.bill_no || '',
+      }).toString()}`;
+
+      setToastMessage('Payment saved successfully');
       setShowTransactionModal(false);
       setTransactionPatient(null);
+      onViewTransaction(redirectPath);
     } catch (error) {
       console.error('Error saving payment:', error);
       alert(error?.message || 'Failed to save payment.');
@@ -249,6 +273,12 @@ const PatientTable = ({
           }}
           onSave={handleSaveTransaction}
         />
+      )}
+
+      {toastMessage && (
+        <div className="toast-container" role="status" aria-live="polite" aria-atomic="true">
+          <div className="toast toast-success">{toastMessage}</div>
+        </div>
       )}
     </>
   );

@@ -9,6 +9,7 @@ import Sidebar from './components/Sidebar';
 import Dashboard from './components/Dashboard';
 import TransferManagement from './components/TransferManagement';
 import PatientTransactionPage from './components/PatientTransactionPage';
+import PaymentHistoryPage from './components/PaymentHistoryPage';
 
 const emptyPatientForm = {
   first_name: '',
@@ -771,6 +772,7 @@ const handlePrint = () => {
   };
 
   const isPaymentHistoryRoute = /^\/patient\/.*\/transaction(?:\?.*)?$/.test(currentPath);
+  const isGlobalPaymentHistoryRoute = /^\/payment-history(?:\?.*)?$/.test(currentPath);
 
   const transactionPatientName = (() => {
     if (!isPaymentHistoryRoute) return '';
@@ -828,9 +830,12 @@ const handlePrint = () => {
           setActiveTab={setActiveTab}
           collapsed={sidebarCollapsed}
           setCollapsed={setSidebarCollapsed}
+          onNavigate={navigateToPath}
         />
 
-        {isPaymentHistoryRoute ? (
+        {isGlobalPaymentHistoryRoute ? (
+          <PaymentHistoryPage onBack={() => navigateToPath('/')} />
+        ) : isPaymentHistoryRoute ? (
           <PatientTransactionPage
             patientName={transactionPatientName}
             patientId={transactionPatientId}
