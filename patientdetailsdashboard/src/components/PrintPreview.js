@@ -246,11 +246,7 @@ const handlePrint = () => {
               <div className="print-section">
                 <div className="print-grid">
                   <div className="print-item"><strong>Doctor Name:</strong> {selectedPatient.surgeon_name || '-'}</div>
-
                   <div className="print-item"><strong>Diagnosis:</strong> {selectedPatient.diagnosis || '-'}</div>
-                  <div className="print-item"><strong>Baby Birth Date:</strong> {selectedPatient.baby_date_of_birth ?? selectedPatient.baby_birth_date ? formatDateTimeIndian(selectedPatient.baby_date_of_birth ?? selectedPatient.baby_birth_date) : '-'}</div>
-                  <div className="print-item"><strong>Baby Gender:</strong> {selectedPatient.baby_gender || '-'}</div>
-                  <div className="print-item"><strong>Baby Weight:</strong> {selectedPatient.baby_weight ? `${selectedPatient.baby_weight} kg` : '-'}</div>
                 </div>
               </div>
 
